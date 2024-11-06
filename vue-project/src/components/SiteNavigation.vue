@@ -11,8 +11,12 @@
         </RouterLink>
   
         <div class="flex gap-3 flex-1 justify-end">
+          <RouterLink :to="{name : 'profile'}"  class="flex-1">
+          
             <i class="fa-regular fa-user hover:text-primary-hover duration-150 cursor-pointer text-2xl"></i>
-               <i class="fa-solid fa-bars hover:text-primary-hover duration-150 cursor-pointer text-2xl"></i>
+          </RouterLink>
+          <i class="fa-solid fa-bars hover:text-primary-hover duration-150 cursor-pointer text-2xl"></i>
+   
           </div>
 
         
