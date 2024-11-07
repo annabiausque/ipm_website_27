@@ -8,6 +8,7 @@
 <script setup>
 import VueTinder from "../lib/vue-tinder/src/components/vue-tinder/Tinder.vue"; // Vérifiez que le chemin est correct
 
+
 // Exemple de données de test pour `myQueueData`
 const myQueueData = [
   { key: 1, title: "Carte 1", description: "Ceci est la première carte" },
