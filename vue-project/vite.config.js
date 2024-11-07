@@ -1,3 +1,4 @@
+import path from 'path';
 import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
@@ -12,6 +13,9 @@ export default defineConfig({
     vueJsx(),
     react()
   ],
+  alias: {
+    'vue-tinder': path.resolve(__dirname, 'node_modules/vue-tinder/src')
+  },
   esbuild: {
     loader: 'jsx',
     include: /.*\.jsx?$/,

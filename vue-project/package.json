@@ -10,12 +10,12 @@
     "@tailwindcss/forms": "^0.5.9",
     "@vitejs/plugin-react": "^4.3.3",
     "@vitejs/plugin-vue": "^5.1.4",
+    "@vitejs/plugin-vue-jsx": "^4.0.1",
     "framer-motion": "^11.11.11",
     "jsx": "^0.9.89",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "vue": "^3.2.37",
-    "vue-router": "^4.0.16"
+    "vue-router": "^4.0.16",
+    "vue-tinder": "https://github.com/shanlh/vue-tinder.git"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -23,14 +23,12 @@
     "@babel/plugin-proposal-decorators": "^7.25.9",
     "@babel/plugin-transform-runtime": "^7.25.9",
     "@babel/preset-env": "^7.26.0",
-    "@babel/preset-react": "^7.25.9",
     "@babel/runtime": "^7.26.0",
-    "@rollup/plugin-babel": "^6.0.3",
-    "@vitejs/plugin-react": "^4.3.3",
+    "@rollup/plugin-babel": "^6.0.4",
     "@vitejs/plugin-vue": "^5.1.4",
-    "@vitejs/plugin-vue-jsx": "^4.0.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
+    "sass-embedded": "^1.80.6",
     "tailwindcss": "^3.4.14",
     "vite": "^5.4.10"
   }
