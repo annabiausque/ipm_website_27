@@ -19,3 +19,11 @@
 ::-webkit-scrollbar-thumb:hover{
   background: #718096;
 }
+
+/* Ajoute ces classes dans ton fichier CSS global */
+.swipe-left {
+  @apply -translate-x-full opacity-0;
+}
+.swipe-right {
+  @apply translate-x-full opacity-0;
+}
