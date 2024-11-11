@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="js">
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import VueTailwindDatepicker from 'vue-tailwind-datepicker';
@@ -15,6 +15,8 @@ supabase.auth.onAuthStateChange((event, session) => {
   }
 });
 
+const { currentRoute } = useRouter();
+
 const layout = computed(() => {
   return `${router.currentRoute.value.meta.layout || defaultLayout}-layout`;
 });
@@ -22,6 +24,11 @@ const layout = computed(() => {
 
 <template>
   <component :is="layout">
+  
     <router-view />
   </component>
 </template>
+
+<style>
+/* Styles optionnels */
+</style>

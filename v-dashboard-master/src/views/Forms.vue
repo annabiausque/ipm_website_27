@@ -1,8 +1,10 @@
 <script setup lang="ts">
 
 import { ref } from "vue";
+import VueTailwindDatepicker from "vue-tailwind-datepicker";
 
-
+const min = ref(10)
+const max = ref(20)
 const dateValue = ref([]);
 interface User {
   username: string
@@ -23,6 +25,9 @@ function register() {
   // eslint-disable-next-line no-console
   console.log('Registered: ', data)
 }
+
+
+
 </script>
 
 
@@ -127,49 +132,45 @@ function register() {
       <div class="mt-4">
         <div class="p-5 bg-white rounded-md shadow-md">
         
-
+          <div class="sm:col-span-8">
           <form @submit.prevent="register">
 
-            <div class="sm:col-span-8">
-              <div class="sm:col-span-1">
-              <label for="subject" class="block text-sm/6 font-medium text-gray-900">Number of groups</label>
-              <div class="mt-2 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-               
-                  <div class="mt-2">
-                    <input
-                      id="groupsNumber"
-                      type="int"
-                      onclick=""
-                      class="flex h-10 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 undefined"
-                    />
-                  </div>
-                </div>
-              </div>
+        
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-white rounded-md shadow-md">
+  <!-- Champ de saisie pour "Number of groups" -->
+  <div>
+    <label for="groupsNumber" class="block text-sm font-medium text-gray-900">Number of groups</label>
+    <div class="py-2">
+    <input id="groupsNumber" type="number" class="w-full rounded-md border-2 border-gray-300 bg-gray-100 px-4 py-1.5 text-lg">
+  </div>
+  </div>
 
-              <div class="sm:col-span-2"> 
-  <div class="mt-2 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-2">
-    <div class="relative mb-6">
-      <label for="labels-range-input" class="sr-only">Labels range</label>
-      <input id="minmax-range" type="range" min="1" max="10" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-       <div class="flex justify-between w-full absolute -bottom-6">
-        <span class="text-sm text-gray-500 dark:text-gray-400">1</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">2</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">3</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">4</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">5</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">6</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">7</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">8</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">9</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">10</span>
-      </div>
+  <!-- Double Range Slider Responsive -->
+  <div>
+    <label class="block text-sm font-medium text-gray-900">Select Range</label>
+    <div class="flex items-center space-x-2">
+      <double-range-slider 
+        class="w-full"
+        :min="min"
+        :max="max"
+        :min-threshold="0"
+        :max-threshold="100"
+        @update:min="(value: string | number) => min = +value"
+        @update:max="(value: string | number) => max = +value"
+      ></double-range-slider>
+      <span class="text-gray-700">{{ min }} - {{ max }}</span>
     </div>
   </div>
 </div>
 
-          </div>
-          </form>
+          
+
      
+
+
+      
+          </form>
+         </div>
             
         </div>
       </div>
