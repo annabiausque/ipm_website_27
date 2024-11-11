@@ -1,31 +1,81 @@
-<script setup lang="ts">
+<script setup lang="js">
 
-import { ref } from "vue";
+
+import { ref, onMounted } from 'vue'
+import { supabase } from '../lib/supabaseClient'
 import VueTailwindDatepicker from "vue-tailwind-datepicker";
 
-const min = ref(10)
-const max = ref(20)
+const min = ref(3)
+const max = ref(7)
 const dateValue = ref([]);
-interface User {
-  username: string
-  email: string
-  password: string
-  confirm: string
+const title = ref('');
+const description = ref('');
+const ressource = ref('');
+
+async function createProject() {
+    try {
+      
+
+        if (error) throw error
+    } catch (error) {
+        alert(error.message)
+    } finally {
+ 
+    }
 }
 
-const user = ref<User>({
-  username: '',
-  email: '',
-  password: '',
-  confirm: '',
-})
+async function uploadPdf(file) {
+  // Vérifiez que le fichier existe et est bien au format PDF
+  if (!file || file.type !== 'application/pdf') {
+    console.error('Veuillez sélectionner un fichier PDF');
+    return;
+  }
 
-function register() {
-  const data = JSON.parse(JSON.stringify(user.value))
-  // eslint-disable-next-line no-console
-  console.log('Registered: ', data)
+  // Nom unique pour le fichier, basé sur le timestamp
+  const fileName = `${Date.now()}_${file.name}`;
+  
+  // Télécharger le fichier dans le bucket
+  const { data, error } = await supabase.storage
+    .from('documents') // Nom du bucket créé dans Supabase
+    .upload(fileName, file, {
+      contentType: 'application/pdf',
+    });
+
+  if (error) {
+    console.error('Erreur lors du téléchargement du PDF:', error.message);
+    return;
+  }
+
+  // Retourner le chemin du fichier pour l'enregistrer dans la base de données
+  console.log('PDF téléchargé avec succès:', data.Key);
+  return data.Key; // Clé ou chemin du fichier dans le bucket
 }
 
+async function savePdfToDatabase(fileName, filePath) {
+  const { data, error } = await supabase
+    .from('documents')
+    .insert([
+      { name: fileName, file_path: filePath }
+    ]);
+
+  if (error) {
+    console.error('Erreur lors de l\'enregistrement dans la base de données:', error.message);
+  } else {
+    console.log('Fichier enregistré dans la base de données:', data);
+  }
+}
+
+async function handleFileUpload(event) {
+  const file = event.target.files[0]; // Récupère le fichier sélectionné
+
+  // Étape 1 : Télécharger le fichier vers Supabase Storage
+  const filePath = await uploadPdf(file);
+
+  if (filePath) {
+    // Étape 2 : Enregistrer le chemin du fichier dans la base de données
+    await savePdfToDatabase(file.name, filePath);
+  }
+}
 
 
 </script>
@@ -48,7 +98,7 @@ function register() {
         <div class="p-5 bg-white rounded-md shadow-md">
         
 
-          <form @submit.prevent="register">
+          <form @submit.prevent="createProject">
             
      
             
@@ -68,16 +118,16 @@ function register() {
         </div>
 
         <div class="sm:col-span-3">
-          <label for="last-name" class="block text-sm/6 font-medium text-gray-900">Title</label>
+          <label for="title" class="block text-sm/6 font-medium text-gray-900">Title</label>
           <div class="mt-2">
-            <input type="text" name="last-name" id="last-name" autocomplete="family-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+            <input type="text" name="title" id="title" v-model = 'title' class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
           </div>
         </div>
 
         <div class="col-span-full">
           <label for="about" class="block text-sm/6 font-medium text-gray-900">About</label>
           <div class="mt-2">
-            <textarea id="about" name="about" rows="3" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"></textarea>
+            <textarea id="about" name="about" rows="3" v-model = "description" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"></textarea>
           </div>
           <p class="mt-3 text-sm/6 text-gray-600">Describe the main goal of the project.</p>
         </div>
@@ -91,32 +141,25 @@ function register() {
         </div>
  
 
-      
         <div class="col-span-full">
-          <label for="cover-photo" class="block text-sm/6 font-medium text-gray-900">Ressources</label>
-          <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-            <div class="text-center">
-              <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-                <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clip-rule="evenodd" />
-              </svg>
-              <div class="mt-4 flex text-sm/6 text-gray-600">
-                <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
-                  <span>Upload a file</span>
-                  <input id="file-upload" name="file-upload" type="file" class="sr-only">
-                </label>
-                <p class="pl-1">or drag and drop</p>
+                <label for="cover-photo" class="block text-sm/6 font-medium text-gray-900">Resources</label>
+                <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                  <div class="text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clip-rule="evenodd" />
+                    </svg>
+                    <div class="mt-4 flex text-sm/6 text-gray-600">
+                      <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 hover:text-indigo-500">
+                        <span>Upload a file</span>
+                        <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleFileUpload">
+                      </label>
+                      <p class="pl-1">or drag and drop</p>
+                    </div>
+                    <p class="text-xs/5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+                  </div>
+                </div>
               </div>
-              <p class="text-xs/5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
             </div>
-          </div>
-        </div>
-      </div>
-      
- 
-         
-            
-    
-         
           </form>
         
         </div>
@@ -137,36 +180,37 @@ function register() {
 
         
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-white rounded-md shadow-md">
-  <!-- Champ de saisie pour "Number of groups" -->
-  <div>
-    <label for="groupsNumber" class="block text-sm font-medium text-gray-900">Number of groups</label>
-    <div class="py-2">
-    <input id="groupsNumber" type="number" class="w-full rounded-md border-2 border-gray-300 bg-gray-100 px-4 py-1.5 text-lg">
-  </div>
-  </div>
+ 
+              <div>
+                <label for="groupsNumber" class="block text-sm font-medium text-gray-900">Number of groups</label>
+                <div class="py-2">
+                <input id="groupsNumber" type="number" class="w-full rounded-md border-2 border-gray-300 bg-gray-100 px-4 py-1.5 text-lg">
+              </div>
+              </div>
 
-  <!-- Double Range Slider Responsive -->
-  <div>
-    <label class="block text-sm font-medium text-gray-900">Select Range</label>
-    <div class="flex items-center space-x-2">
-      <double-range-slider 
-        class="w-full"
-        :min="min"
-        :max="max"
-        :min-threshold="0"
-        :max-threshold="100"
-        @update:min="(value: string | number) => min = +value"
-        @update:max="(value: string | number) => max = +value"
-      ></double-range-slider>
-      <span class="text-gray-700">{{ min }} - {{ max }}</span>
-    </div>
-  </div>
-</div>
-
-          
+  
+              <div>
+                <label class="block text-sm font-medium text-gray-900">Select Range</label>
+                <div class="flex items-center space-x-2">
+                  <double-range-slider 
+                    class="w-full"
+                    :min="min"
+                    :max="max"
+                    :min-threshold="0"
+                    :max-threshold="10"
+                    @update:min="(value) => min = +value"
+                    @update:max="(value) => max = +value"
+                  ></double-range-slider>
+                  <span class="text-gray-700">{{ min }} - {{ max }}</span>
+                </div>
+              </div>
+            </div>
 
      
-
+            <div class="mt-6 flex items-center justify-end gap-x-6">
+                <button type="button" class="text-sm/6 font-semibold text-gray-900">Cancel</button>
+                <button type="submit" @click="createProject" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create project</button>
+            </div>
 
       
           </form>
@@ -193,7 +237,7 @@ function register() {
     ],
   }
   ```
--->
+
 <form>
   <div class="space-y-12">
     <div class="border-b border-gray-900/10 pb-12">
@@ -239,9 +283,9 @@ function register() {
         </div>
 
         <div class="sm:col-span-3">
-          <label for="last-name" class="block text-sm/6 font-medium text-gray-900">Last name</label>
+          <label for="title" class="block text-sm/6 font-medium text-gray-900">Last name</label>
           <div class="mt-2">
-            <input type="text" name="last-name" id="last-name" autocomplete="family-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+            <input type="text" name="title" id="title" autocomplete="family-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
           </div>
         </div>
 
@@ -343,5 +387,5 @@ function register() {
     <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
   </div>
 </form>
-
+-->
 </template>
