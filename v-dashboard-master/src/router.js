@@ -1,16 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import {supabase}  from './lib/supabaseClient'; 
 
 import Dashboard from './views/Dashboard.vue'
 import Forms from './views/Forms.vue'
 import Tables from './views/Tables.vue'
 import UIElements from './views/UIElements.vue'
 import Login from './views/Login.vue'
-import ResetPassword from './views/ResetPassword.vue'
 import Modal from './views/Modal.vue'
 import Card from './views/Card.vue'
 import Blank from './views/Blank.vue'
 import SupabaseTest from './views/SupabaseTest.vue'
-import {supabase}  from './lib/supabaseClient'; 
+import ResetPassword from './views/ResetPassword.vue'
+import Register from './views/Register.vue'
+
 
 const routes= [
   {
@@ -23,6 +25,12 @@ const routes= [
     path: '/reset-password',
     name: 'ResetPassword',
     component: ResetPassword,
+    meta: { layout: 'empty' },
+  },
+      {
+    path: '/register',
+    name: 'Register',
+    component: Register,
     meta: { layout: 'empty' },
   },
   {

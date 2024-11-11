@@ -48,16 +48,16 @@ console.log('data', data)
         </label>
 
         <div class="flex items-center justify-between mt-4">
-          <div>
+          <!-- <div>
             <label class="inline-flex items-center">
               <input type="checkbox"
                 class="text-indigo-600 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500">
               <span class="mx-2 text-sm text-gray-600">Remember me</span>
             </label>
-          </div>
+          </div> -->
 
-          <RouterLink to="/reset-password">
-            <a class="block text-sm text-indigo-700 fontme hover:underline" href="#">Forgot your password?</a>
+          <RouterLink to="/reset-password" class="block text-sm text-indigo-700 fontme hover:underline">
+            Forgot your password?
           </RouterLink>
         </div>
         <button type="submit"
@@ -65,6 +65,12 @@ console.log('data', data)
           Login
         </button>
       </form>
+      <p class="mt-12 text-xs text-gray-700">
+        Don't have an account yet?
+        <RouterLink to="/register" class="text-indigo-700 hover:underline">
+          Register
+        </RouterLink>
+      </p>
     </div>
   </div>
 </template>
