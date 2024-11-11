@@ -27,3 +27,8 @@
 .swipe-right {
   @apply translate-x-full opacity-0;
 }
+
+.multi-range-slider-container {
+  max-width: 500px;
+  margin: 50px auto;
+}
