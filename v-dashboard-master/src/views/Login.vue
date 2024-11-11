@@ -1,14 +1,29 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { supabase } from '../lib/supabaseClient';
 
-const router = useRouter()
-const email = ref('johndoe@mail.com')
-const password = ref('@#!@#asdf1231!_!@#')
+const router = useRouter();
 
-function login() {
-  router.push('/dashboard')
-}
+const loading = ref(false);
+const email = ref('');
+const password = ref('');
+
+const login = async () => {
+  console.log('login');
+  loading.value = true;
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+  })
+console.log('data', data)
+  loading.value = false;
+  if (!error) {
+    router.push('/dashboard');
+  } else {
+    console.error(error.message);
+  }
+};
 </script>
 
 <template>
@@ -25,36 +40,15 @@ function login() {
           <input v-model="email" type="email"
             class="block w-full mt-1 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500">
         </label>
-
         <label class="block mt-3">
           <span class="text-sm text-gray-700">Password</span>
           <input v-model="password" type="password"
             class="block w-full mt-1 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500">
         </label>
-
-        <div class="flex items-center justify-between mt-4">
-          <div>
-            <label class="inline-flex items-center">
-              <input type="checkbox"
-                class="text-indigo-600 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500">
-              <span class="mx-2 text-sm text-gray-600">Remember me</span>
-            </label>
-          </div>
-
-          <!-- <div>
-            <a
-              class="block text-sm text-indigo-700 fontme hover:underline"
-              href="#"
-            >Forgot your password?</a>
-          </div> -->
-        </div>
-
-        <div class="mt-6">
-          <button type="submit"
-            class="w-full px-4 py-2 text-sm text-center text-white bg-indigo-600 rounded-md focus:outline-none hover:bg-indigo-500">
-            Sign in
-          </button>
-        </div>
+        <button type="submit"
+          class="w-full px-4 py-2 mt-4 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700">
+          Login
+        </button>
       </form>
     </div>
   </div>
