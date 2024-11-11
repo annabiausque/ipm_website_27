@@ -87,6 +87,24 @@ function register() {
  
 
       
+        <div class="col-span-full">
+          <label for="cover-photo" class="block text-sm/6 font-medium text-gray-900">Ressources</label>
+          <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+            <div class="text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+                <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clip-rule="evenodd" />
+              </svg>
+              <div class="mt-4 flex text-sm/6 text-gray-600">
+                <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
+                  <span>Upload a file</span>
+                  <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                </label>
+                <p class="pl-1">or drag and drop</p>
+              </div>
+              <p class="text-xs/5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+            </div>
+          </div>
+        </div>
       </div>
       
  
@@ -98,6 +116,64 @@ function register() {
         
         </div>
       </div>
+    </div>
+
+    <div class="mt-8">
+
+      <h4 class="text-gray-600">
+        Groups' definition
+      </h4> 
+
+      <div class="mt-4">
+        <div class="p-5 bg-white rounded-md shadow-md">
+        
+
+          <form @submit.prevent="register">
+
+            <div class="sm:col-span-8">
+              <div class="sm:col-span-1">
+              <label for="subject" class="block text-sm/6 font-medium text-gray-900">Number of groups</label>
+              <div class="mt-2 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+               
+                  <div class="mt-2">
+                    <input
+                      id="groupsNumber"
+                      type="int"
+                      onclick=""
+                      class="flex h-10 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 undefined"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="sm:col-span-2"> 
+  <div class="mt-2 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-2">
+    <div class="relative mb-6">
+      <label for="labels-range-input" class="sr-only">Labels range</label>
+      <input id="minmax-range" type="range" min="1" max="10" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+       <div class="flex justify-between w-full absolute -bottom-6">
+        <span class="text-sm text-gray-500 dark:text-gray-400">1</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">2</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">3</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">4</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">5</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">6</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">7</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">8</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">9</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">10</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+          </div>
+          </form>
+     
+            
+        </div>
+      </div>
+      
     </div>
      
   </div>
@@ -146,24 +222,6 @@ function register() {
           </div>
         </div>
 
-        <div class="col-span-full">
-          <label for="cover-photo" class="block text-sm/6 font-medium text-gray-900">Cover photo</label>
-          <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-            <div class="text-center">
-              <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-                <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clip-rule="evenodd" />
-              </svg>
-              <div class="mt-4 flex text-sm/6 text-gray-600">
-                <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
-                  <span>Upload a file</span>
-                  <input id="file-upload" name="file-upload" type="file" class="sr-only">
-                </label>
-                <p class="pl-1">or drag and drop</p>
-              </div>
-              <p class="text-xs/5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
