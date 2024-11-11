@@ -5,11 +5,11 @@ import Forms from './views/Forms.vue'
 import Tables from './views/Tables.vue'
 import UIElements from './views/UIElements.vue'
 import Login from './views/Login.vue'
+import ResetPassword from './views/ResetPassword.vue'
 import Modal from './views/Modal.vue'
 import Card from './views/Card.vue'
 import Blank from './views/Blank.vue'
 import SupabaseTest from './views/SupabaseTest.vue'
-import SupabaseAuth from './views/SupabaseAuth.vue'
 import {supabase}  from './lib/supabaseClient'; 
 
 const routes= [
@@ -17,6 +17,12 @@ const routes= [
     path: '/',
     name: 'Login',
     component: Login,
+    meta: { layout: 'empty' },
+  },
+    {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPassword,
     meta: { layout: 'empty' },
   },
   {
@@ -60,11 +66,7 @@ const routes= [
     name: 'SupabaseTest',
     component: SupabaseTest,
   },
-    {
-    path: '/supabase-auth',
-    name: 'SupabaseAuth',
-    component: SupabaseAuth,
-  },
+  
 ]
 
 const router = createRouter({
@@ -75,7 +77,7 @@ const router = createRouter({
 // Navigation guard
 router.beforeEach(async (to, from, next) => {
   const { data: session } = await supabase.auth.getSession();
-
+  console.log(session, session);
   // If the route requires authentication and there's no session, redirect to /login
   if (to.matched.some(record => record.meta.requiresAuth) && !session) {
     next({ name: 'Login' });
