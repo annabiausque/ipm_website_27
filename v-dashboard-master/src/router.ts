@@ -9,6 +9,7 @@ import Login from './views/Login.vue'
 import Modal from './views/Modal.vue'
 import Card from './views/Card.vue'
 import Blank from './views/Blank.vue'
+import SupabaseTest from './views/SupabaseTest.vue'
 
 
 const routes: RouteRecordRaw[] = [
@@ -53,8 +54,11 @@ const routes: RouteRecordRaw[] = [
     name: 'Blank',
     component: Blank,
   },
-
-
+  {
+    path: '/supabase',
+    name: 'SupabaseTest',
+    component: SupabaseTest,
+  },
 ]
 
 const router = createRouter({
