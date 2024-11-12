@@ -13,26 +13,32 @@ const description = ref('');
 const ressource = ref('');
 
 async function createProject() {
-    try {
-      
+  const { data, error } = await supabase
+    .from('projects')
+    .insert([
+      {
+        title: title.value,
+        description: description.value,
+        date: dateValue.value,
+      }
+    ]);
 
-        if (error) throw error
-    } catch (error) {
-        alert(error.message)
-    } finally {
- 
-    }
+  if (error) {
+    console.error('Erreur lors de la création du projet:', error.message);
+  } else {
+    console.log('Projet créé avec succès:', data);
+  }
 }
 
 async function uploadPdf(file) {
-  // Vérifiez que le fichier existe et est bien au format PDF
+  
   if (!file || file.type !== 'application/pdf') {
     console.error('Veuillez sélectionner un fichier PDF');
     return;
   }
 
-  // Nom unique pour le fichier, basé sur le timestamp
-  const fileName = `${Date.now()}_${file.name}`;
+
+  const fileName = `${Date.now()}_${file.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`; // Nom du fichier
   
   // Télécharger le fichier dans le bucket
   const { data, error } = await supabase.storage
