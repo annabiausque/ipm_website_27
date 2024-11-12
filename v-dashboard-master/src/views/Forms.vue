@@ -1,34 +1,58 @@
 <script setup lang="js">
 
-
-import { ref, onMounted } from 'vue'
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '../lib/supabaseClient';
+import { ref, onMounted } from 'vue';
 import VueTailwindDatepicker from "vue-tailwind-datepicker";
 
-const min = ref(3)
-const max = ref(7)
-const dateValue = ref([]);
 const title = ref('');
 const description = ref('');
-const ressource = ref('');
+const dateValue = ref([]); // Exemple de dates par défaut
+const min = ref(1);
+const max = ref(10);
+const userId = ref(null); // Pour stocker l'ID de l'utilisateur
+
+// Récupération de la session et de l'ID de l'utilisateur lors du montage du composant
+onMounted(async () => {
+  const { data } = await supabase.auth.getSession();
+  userId.value = data.session?.user?.id || null;
+
+  if (!userId.value) {
+    console.error('Utilisateur non authentifié');
+    // Rediriger vers la page de connexion ou afficher un message d'erreur
+  }
+});
 
 async function createProject() {
-  const { data, error } = await supabase
-    .from('projects')
-    .insert([
-      {
-        title: title.value,
-        description: description.value,
-        date: dateValue.value,
-      }
-    ]);
+  if (!userId.value) {
+    alert('Erreur : Utilisateur non authentifié.');
+    return;
+  }
 
-  if (error) {
+  try {
+    const { data, error } = await supabase
+      .from('projects')
+      .insert([
+        {
+          title: title.value,
+          description: description.value,
+          start_date: dateValue.value[0],
+          end_date: dateValue.value[1],
+          min_students: min.value,
+          max_students: max.value,
+          id_owner: userId.value, // Utilisation de l'ID de l'utilisateur
+        }
+      ]);
+
+    if (error) {
+      console.error('Erreur lors de la création du projet:', error.message);
+    } else {
+      console.log('Projet créé avec succès:', data);
+    }
+  } catch (error) {
     console.error('Erreur lors de la création du projet:', error.message);
-  } else {
-    console.log('Projet créé avec succès:', data);
   }
 }
+
 
 async function uploadPdf(file) {
   

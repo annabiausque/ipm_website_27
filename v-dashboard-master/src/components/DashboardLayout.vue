@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="js">
 import Sidebar from './Sidebar.vue'
 import Header from './Header.vue'
 </script>

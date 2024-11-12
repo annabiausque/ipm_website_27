@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import {supabase}  from './lib/supabaseClient'; 
+import { supabase } from './lib/supabaseClient'; 
 
 import Dashboard from './views/Dashboard.vue'
 import Forms from './views/Forms.vue'
@@ -13,87 +13,44 @@ import SupabaseTest from './views/SupabaseTest.vue'
 import ResetPassword from './views/ResetPassword.vue'
 import Register from './views/Register.vue'
 
-
-const routes= [
-  {
-    path: '/',
-    name: 'Login',
-    component: Login,
-    meta: { layout: 'empty' },
-  },
-    {
-    path: '/reset-password',
-    name: 'ResetPassword',
-    component: ResetPassword,
-    meta: { layout: 'empty' },
-  },
-      {
-    path: '/register',
-    name: 'Register',
-    component: Register,
-    meta: { layout: 'empty' },
-  },
-  {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: Dashboard,
-    meta: { requiresAuth: true } 
-  },
-  {
-    path: '/forms',
-    name: 'Forms',
-    component: Forms,
-  },
-  {
-    path: '/cards',
-    name: 'Cards',
-    component: Card,
-  },
-  {
-    path: '/tables',
-    name: 'Tables',
-    component: Tables,
-  },
-  {
-    path: '/ui-elements',
-    name: 'UIElements',
-    component: UIElements,
-  },
-  {
-    path: '/modal',
-    name: 'Modal',
-    component: Modal,
-  },
-  {
-    path: '/blank',
-    name: 'Blank',
-    component: Blank,
-  },
-  {
-    path: '/supabase',
-    name: 'SupabaseTest',
-    component: SupabaseTest,
-  },
-  
-]
+// Define routes
+const routes = [
+  { path: '/', name: 'Login', component: Login, meta: { layout: 'empty' } },
+  { path: '/reset-password', name: 'ResetPassword', component: ResetPassword, meta: { layout: 'empty' } },
+  { path: '/register', name: 'Register', component: Register, meta: { layout: 'empty' } },
+  { path: '/dashboard', name: 'Dashboard', component: Dashboard, meta: { requiresAuth: true } },
+  { path: '/forms', name: 'Forms', component: Forms, meta: { requiresAuth: true } },
+  { path: '/cards', name: 'Cards', component: Card },
+  { path: '/tables', name: 'Tables', component: Tables },
+  { path: '/ui-elements', name: 'UIElements', component: UIElements },
+  { path: '/modal', name: 'Modal', component: Modal },
+  { path: '/blank', name: 'Blank', component: Blank },
+  { path: '/supabase', name: 'SupabaseTest', component: SupabaseTest },
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-})
+});
 
-// Navigation guard
+// Navigation guard to protect routes requiring authentication
 router.beforeEach(async (to, from, next) => {
-  const { data: session } = await supabase.auth.getSession();
-  console.log(session, session);
-  // If the route requires authentication and there's no session, redirect to /login
+  // Get session asynchronously
+  const { data } = await supabase.auth.getSession();
+  const session = data.session; // Session object
+
+  // If the route requires authentication and the user is not logged in, redirect to login page
   if (to.matched.some(record => record.meta.requiresAuth) && !session) {
     next({ name: 'Login' });
-  } else if (to.path === '/login' && session) {
-    // If logged in and trying to access /login, redirect to /dashboard
+  }
+  // If the user is logged in and tries to go to /login, redirect to /dashboard
+  else if (to.name === 'Login' && session) {
     next({ name: 'Dashboard' });
-  } else {
+  }
+  // Otherwise, proceed to the requested route
+  else {
     next();
   }
 });
-export default router
+
+export default router;
