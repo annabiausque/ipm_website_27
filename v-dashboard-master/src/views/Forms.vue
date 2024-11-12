@@ -6,19 +6,19 @@ import VueTailwindDatepicker from "vue-tailwind-datepicker";
 
 const title = ref('');
 const description = ref('');
-const dateValue = ref([]); // Exemple de dates par défaut
+const dateValue = ref([]); 
 const min = ref(1);
 const max = ref(10);
-const userId = ref(null); // Pour stocker l'ID de l'utilisateur
+const userId = ref(null); 
 
-// Récupération de la session et de l'ID de l'utilisateur lors du montage du composant
+
 onMounted(async () => {
   const { data } = await supabase.auth.getSession();
   userId.value = data.session?.user?.id || null;
 
   if (!userId.value) {
     console.error('Utilisateur non authentifié');
-    // Rediriger vers la page de connexion ou afficher un message d'erreur
+
   }
 });
 
@@ -39,7 +39,7 @@ async function createProject() {
           end_date: dateValue.value[1],
           min_students: min.value,
           max_students: max.value,
-          id_owner: userId.value, // Utilisation de l'ID de l'utilisateur
+          id_owner: userId.value, 
         }
       ]);
 
@@ -54,21 +54,16 @@ async function createProject() {
 }
 
 
-async function uploadPdf(file) {
-  
-  if (!file || file.type !== 'application/pdf') {
-    console.error('Veuillez sélectionner un fichier PDF');
-    return;
-  }
+async function uploadPdf(event) {
+  const file = event.target.files[0]; 
 
 
-  const fileName = `${Date.now()}_${file.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`; // Nom du fichier
+  const fileName = `${Date.now()}_${file.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`; 
   
-  // Télécharger le fichier dans le bucket
   const { data, error } = await supabase.storage
-    .from('documents') // Nom du bucket créé dans Supabase
+    .from('documents') 
     .upload(fileName, file, {
-      contentType: 'application/pdf',
+      contentType: file.type,
     });
 
   if (error) {
@@ -76,9 +71,8 @@ async function uploadPdf(file) {
     return;
   }
 
-  // Retourner le chemin du fichier pour l'enregistrer dans la base de données
   console.log('PDF téléchargé avec succès:', data.Key);
-  return data.Key; // Clé ou chemin du fichier dans le bucket
+  return data.Key; 
 }
 
 async function savePdfToDatabase(fileName, filePath) {
@@ -88,6 +82,7 @@ async function savePdfToDatabase(fileName, filePath) {
       { name: fileName, file_path: filePath }
     ]);
 
+
   if (error) {
     console.error('Erreur lors de l\'enregistrement dans la base de données:', error.message);
   } else {
@@ -96,13 +91,11 @@ async function savePdfToDatabase(fileName, filePath) {
 }
 
 async function handleFileUpload(event) {
-  const file = event.target.files[0]; // Récupère le fichier sélectionné
+  const file = event.target.files[0]; 
 
-  // Étape 1 : Télécharger le fichier vers Supabase Storage
   const filePath = await uploadPdf(file);
 
   if (filePath) {
-    // Étape 2 : Enregistrer le chemin du fichier dans la base de données
     await savePdfToDatabase(file.name, filePath);
   }
 }
@@ -181,7 +174,7 @@ async function handleFileUpload(event) {
                     <div class="mt-4 flex text-sm/6 text-gray-600">
                       <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 hover:text-indigo-500">
                         <span>Upload a file</span>
-                        <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleFileUpload">
+                        <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="uploadPdf">
                       </label>
                       <p class="pl-1">or drag and drop</p>
                     </div>

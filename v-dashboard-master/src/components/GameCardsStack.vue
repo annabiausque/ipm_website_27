@@ -13,7 +13,7 @@
     </div>
   </template>
   
-  <script>
+  <script lang = "js">
   import GameCard from "../components/GameCard.vue";
   
   export default {

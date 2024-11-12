@@ -12,9 +12,10 @@
     <h3 class="cardTitle">{{ card }}</h3>
     <h2 class="cardTitle">Swipe left to reject, right to accept</h2>
   </div>
+
 </template>
 
-<script>
+<script lang = "js">
 import interact from "interact.js";
 const ACCEPT_CARD = "cardAccepted";
 const REJECT_CARD = "cardRejected";

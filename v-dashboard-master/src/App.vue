@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="js">
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import VueTailwindDatepicker from 'vue-tailwind-datepicker';

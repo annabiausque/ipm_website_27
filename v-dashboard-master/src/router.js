@@ -12,6 +12,7 @@ import Blank from './views/Blank.vue'
 import SupabaseTest from './views/SupabaseTest.vue'
 import ResetPassword from './views/ResetPassword.vue'
 import Register from './views/Register.vue'
+import Match from './views/Match.vue'
 
 // Define routes
 const routes = [
@@ -26,6 +27,7 @@ const routes = [
   { path: '/modal', name: 'Modal', component: Modal },
   { path: '/blank', name: 'Blank', component: Blank },
   { path: '/supabase', name: 'SupabaseTest', component: SupabaseTest },
+  { path: '/match', name: 'Match', component: Match },
 ];
 
 const router = createRouter({
