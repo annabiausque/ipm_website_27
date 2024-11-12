@@ -11,7 +11,7 @@ const username = ref('');
 const email = ref('');
 const password = ref('');
 const passwordConfirm = ref('');
-const role = ref('');
+const isTeacher = ref('');
 const loading = ref(false);
 
 // Validation and feedback
@@ -34,7 +34,7 @@ const formValid = computed(() => {
     emailIsValid.value &&
     password.value &&
     passwordConfirm.value &&
-    role.value &&
+    isTeacher.value &&
     passwordsMatch.value &&
     isPasswordOk()
   );
@@ -60,7 +60,7 @@ const checkPasswordStrength = () => {
 
 const isPasswordOk = () => {
   return (
-    password.value.length >= 6 
+    password.value.length >= 6
   );
 };
 
@@ -75,6 +75,12 @@ const register = async () => {
   const { error } = await supabase.auth.signUp({
     email: email.value,
     password: password.value,
+    options: {
+      data: {
+        username: username.value,
+        isTeacher: isTeacher.value == "teacher" ? true : false,
+      },
+    },
   });
 
   loading.value = false;
@@ -135,7 +141,7 @@ const onEmailFocus = () => {
 
         <label class="block mt-4">
           <span class="text-sm text-gray-700">Are you a student or teacher?</span>
-          <select v-model="role"
+          <select v-model="isTeacher"
             class="block w-full mt-1 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500">
             <option value="" disabled>Select your role</option>
             <option value="student">Student</option>
