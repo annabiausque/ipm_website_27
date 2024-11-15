@@ -55,6 +55,7 @@ const {
       </div>
     </div>
 
+    
     <div class="mt-8">
       <h4 class="text-gray-600">
         Table with pagination
@@ -237,6 +238,7 @@ const {
         </div>
       </div>
     </div>
+    
 
     <div class="mt-8">
       <h4 class="text-gray-600">
@@ -343,5 +345,6 @@ const {
         </div>
       </div>
     </div>
+    
   </div>
 </template>
