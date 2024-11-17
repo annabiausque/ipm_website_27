@@ -9,9 +9,11 @@ import Login from './views/Login.vue'
 import Modal from './views/Modal.vue'
 import Card from './views/Card.vue'
 import Blank from './views/Blank.vue'
+import StudentForm from './views/StudentForm.vue'
 import SupabaseTest from './views/SupabaseTest.vue'
 import ResetPassword from './views/ResetPassword.vue'
 import Register from './views/Register.vue'
+import Code from './views/Code.vue'
 
 
 const routes= [
@@ -50,6 +52,11 @@ const routes= [
     component: Card,
   },
   {
+    path: '/code',
+    name: 'Code',
+    component: Code,
+  },
+  {
     path: '/tables',
     name: 'Tables',
     component: Tables,
@@ -68,6 +75,11 @@ const routes= [
     path: '/blank',
     name: 'Blank',
     component: Blank,
+  },
+  {
+    path: '/studentform',
+    name: 'StudentForm',
+    component: StudentForm,
   },
   {
     path: '/supabase',
