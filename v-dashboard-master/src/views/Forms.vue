@@ -10,6 +10,9 @@ const dateValue = ref([]);
 const min = ref(1);
 const max = ref(10);
 const userId = ref(null); 
+const subject = ref('');
+const numberOfGroups = ref(1);
+
 
 
 onMounted(async () => {
@@ -40,6 +43,8 @@ async function createProject() {
           min_students: min.value,
           max_students: max.value,
           id_owner: userId.value, 
+          subject: subject.value, 
+          number_of_groups: numberOfGroups.value, 
         }
       ]);
 
@@ -79,7 +84,7 @@ async function savePdfToDatabase(fileName, filePath) {
   const { data, error } = await supabase
     .from('documents')
     .insert([
-      { name: fileName, file_path: filePath }
+      { file_name: fileName, file_path: filePath },
     ]);
 
 
@@ -132,7 +137,7 @@ async function handleFileUpload(event) {
     
           <div class="mt-2">
           
-            <select id="subject" name="subject" autocomplete="subject-name" class="block w-full rounded-md  border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6">
+            <select id="subject" v-model = 'subject' name="subject" autocomplete="subject-name" class="block w-full rounded-md  border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6">
               <option>Human Computer Interaction</option>
               <option>Information retrieval</option>
               <option>Data Modelling</option>
@@ -207,7 +212,7 @@ async function handleFileUpload(event) {
               <div>
                 <label for="groupsNumber" class="block text-sm font-medium text-gray-900">Number of groups</label>
                 <div class="py-2">
-                <input id="groupsNumber" type="number" class="w-full rounded-md border-2 border-gray-300 bg-gray-100 px-4 py-1.5 text-lg">
+                <input id="groupsNumber" v-model = 'numberOfGroups' type="number" class="w-full rounded-md border-2 border-gray-300 bg-gray-100 px-4 py-1.5 text-lg">
               </div>
               </div>
 
