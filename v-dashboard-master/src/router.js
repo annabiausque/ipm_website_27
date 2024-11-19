@@ -13,6 +13,7 @@ import SupabaseTest from './views/SupabaseTest.vue'
 import ResetPassword from './views/ResetPassword.vue'
 import Register from './views/Register.vue'
 import Match from './views/Match.vue'
+import Profile from './views/Profile.vue'
 
 // Define routes
 const routes = [
@@ -28,6 +29,7 @@ const routes = [
   { path: '/blank', name: 'Blank', component: Blank },
   { path: '/supabase', name: 'SupabaseTest', component: SupabaseTest },
   { path: '/match', name: 'Match', component: Match },
+  { path: '/profile', name: 'Profile', component: Profile },
 ];
 
 const router = createRouter({

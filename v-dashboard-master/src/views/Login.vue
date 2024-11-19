@@ -28,7 +28,7 @@ console.log('data', data)
 </script>
 
 <template>
-  <div class="flex items-center justify-center h-screen px-6 bg-gray-200">
+  <div class="flex items-center justify-center h-screen w-screen px-6 bg-gray-200">
     <div class="w-full max-w-sm p-6 bg-white rounded-md shadow-md">
       <div class="flex items-center justify-center">
         <img src="../assets/logo_indigo.png" class="w-16 h-16">
