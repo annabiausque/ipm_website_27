@@ -42,5 +42,6 @@ Thumbs.db
 .branches
 .temp
 .env
+.env*
 
 package-lock.json
