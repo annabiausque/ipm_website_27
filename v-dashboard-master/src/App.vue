@@ -9,7 +9,7 @@ const router = useRouter();
 
 supabase.auth.onAuthStateChange((event, session) => {
   if (event === 'SIGNED_IN') {
-    router.push({ name: 'Dashboard' });
+    // router.push({ name: 'Dashboard' }); // this was forcing redirect to dashboard
   } else if (event === 'SIGNED_OUT') {
     router.push({ name: 'Login' });
   }
@@ -24,7 +24,7 @@ const layout = computed(() => {
 
 <template>
   <component :is="layout">
-  
+
     <router-view />
   </component>
 </template>
