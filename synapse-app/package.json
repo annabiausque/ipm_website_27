@@ -1,6 +1,9 @@
 {
   "name": "synapse",
+  "name": "synapse",
   "version": "0.0.1",
+  "private": true,
+  "type": "module",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,6 +14,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.46.1",
     "@supabase/supabase-js": "^2.46.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.9",
