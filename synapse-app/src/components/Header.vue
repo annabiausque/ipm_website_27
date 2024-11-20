@@ -16,6 +16,12 @@ const logout = async () => {
     console.error(error.message);
   }
 }
+
+  const profile = () => {
+    console.log('Profile');
+    router.push('/profile')
+  }
+  
 </script>
 
 <template>
@@ -55,7 +61,7 @@ const logout = async () => {
           leave-active-class="transition duration-150 ease-in transform" leave-from-class="scale-100 opacity-100"
           leave-to-class="scale-95 opacity-0">
           <div v-show="dropdownOpen" class="absolute right-0 z-20 w-48 py-2 mt-2 bg-white rounded-md shadow-xl">
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Profile</a>
+            <div @click="profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Profile</div>
             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Products</a>
             <div @click="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">
               Log out
