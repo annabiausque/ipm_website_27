@@ -7,7 +7,7 @@ import Tables from './views/Tables.vue'
 import MyProject from './views/MyProjects.vue'
 import Login from './views/Login.vue'
 import Modal from './views/Modal.vue'
-import Card from './views/Card.vue'
+
 import Blank from './views/Blank.vue'
 import StudentForm from './views/StudentForm.vue'
 import SupabaseTest from './views/SupabaseTest.vue'
@@ -53,11 +53,7 @@ const routes= [
     name: 'Forms',
     component: Forms,
   },
-  {
-    path: '/cards',
-    name: 'Cards',
-    component: Card,
-  },
+
   {
     path: '/code',
     name: 'Code',
