@@ -15,6 +15,7 @@ import ResetPassword from './views/ResetPassword.vue'
 import Register from './views/Register.vue'
 import Code from './views/Code.vue'
 import Groups from './views/Groups.vue'
+import Match from './views/Match.vue'
 
 
 const routes= [
@@ -88,6 +89,11 @@ const routes= [
     path: '/supabase',
     name: 'SupabaseTest',
     component: SupabaseTest,
+  },
+  {
+    path: '/match',
+    name: 'Match',
+    component: Match,
   },
   
 ]
