@@ -7,7 +7,7 @@ import Tables from './views/Tables.vue'
 import MyProject from './views/MyProjects.vue'
 import Login from './views/Login.vue'
 import Modal from './views/Modal.vue'
-import Card from './views/Card.vue'
+
 import Blank from './views/Blank.vue'
 import StudentForm from './views/StudentForm.vue'
 import SupabaseTest from './views/SupabaseTest.vue'
@@ -15,6 +15,7 @@ import ResetPassword from './views/ResetPassword.vue'
 import Register from './views/Register.vue'
 import Code from './views/Code.vue'
 import Groups from './views/Groups.vue'
+import Match from './views/Match.vue'
 
 
 const routes= [
@@ -53,11 +54,7 @@ const routes= [
     name: 'Forms',
     component: Forms,
   },
-  {
-    path: '/cards',
-    name: 'Cards',
-    component: Card,
-  },
+
   {
     path: '/code',
     name: 'Code',
@@ -92,6 +89,11 @@ const routes= [
     path: '/supabase',
     name: 'SupabaseTest',
     component: SupabaseTest,
+  },
+  {
+    path: '/match',
+    name: 'Match',
+    component: Match,
   },
   
 ]

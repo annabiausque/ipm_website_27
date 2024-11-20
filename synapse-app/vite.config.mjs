@@ -10,7 +10,6 @@ export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
-    react()
   ],
   // server: { historyApiFallback: true,},
   resolve: {
@@ -18,4 +17,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+
+  optimizeDeps: {
+    include: ['interactjs']
+  }
 })
