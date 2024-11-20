@@ -51,7 +51,7 @@ const updatePassword = async () => {
         <span class="ml-4 text-2xl font-semibold text-gray-700">Synapse</span>
       </div>
 
-      <form v-if="!emailSent && !isUpdate " class="mt-4" @submit.prevent="passwordReset">
+      <form v-if="!emailSent && !isUpdate" class="mt-4" @submit.prevent="passwordReset">
         <label class="block">
           <span class="text-sm text-gray-700">Email</span>
           <input v-model="email" type="email"
