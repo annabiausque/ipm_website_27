@@ -55,7 +55,7 @@ const signUserToProject = async () => {
 
   console.log("User signed to project");
   //redirect user to /groups tab
-  router.push('/groups');
+  router.push({ name: 'Groups', params: { projectId: project_id } });
 }
 </script>
 
@@ -79,7 +79,7 @@ const signUserToProject = async () => {
               <!-- Input Section -->
               <div class="mb-6">
                 <input v-model="codeInput" type="text" placeholder="Provide the code to join the project :)"
-                  class="w-full px-5 py-3 text-base bg-transparent border rounded-md outline-none border-stroke text-body-color dark:text-white dark:border-dark-3 focus:border-primary focus-visible:shadow-none text-center" />
+                  class="w-full px-5 py-3 text-base bg-transparent border rounded-md outline-none border-stroke text-body-color dark:border-dark-3 focus:border-primary focus-visible:shadow-none text-center" />
               </div>
 
               <!-- Buttons Section (Submit + ? button) -->
