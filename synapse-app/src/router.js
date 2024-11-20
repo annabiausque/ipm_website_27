@@ -37,7 +37,7 @@ const routes= [
     meta: { layout: 'empty' },
   },
       {
-    path: '/groups',
+    path: '/groups/:projectId',
     name: 'Groups',
     component: Groups,
   },
