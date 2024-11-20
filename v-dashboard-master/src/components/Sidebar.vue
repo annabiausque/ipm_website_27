@@ -20,7 +20,7 @@ const inactiveClass = ref(
 
     <div :class="isOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'"
       class="fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-gray-900 lg:translate-x-0 lg:static lg:inset-0">
-      <router-link to="/dashboard" class="flex items-center justify-center mt-8">
+      <router-link to="/my-project" class="flex items-center justify-center mt-8">
         <div class="flex items-center">
           <img src="../assets/logo.png" class="w-16 h-16">
           <span class="mx-2 text-2xl font-semibold text-white">Synapse</span>
@@ -31,7 +31,7 @@ const inactiveClass = ref(
 
 
         <router-link class="flex items-center px-6 py-2 mt-4 duration-200 border-l-4"
-          :class="[$route.name === 'UIElements' ? activeClass : inactiveClass]" to="/ui-elements">
+          :class="[$route.name === 'MyProjects' ? activeClass : inactiveClass]" to="/my-projects">
           <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M5 3C3.89543 3 3 3.89543 3 5V7C3 8.10457 3.89543 9 5 9H7C8.10457 9 9 8.10457 9 7V5C9 3.89543 8.10457 3 7 3H5Z"

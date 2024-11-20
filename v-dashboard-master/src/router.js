@@ -4,7 +4,7 @@ import {supabase}  from './lib/supabaseClient';
 import Dashboard from './views/Dashboard.vue'
 import Forms from './views/Forms.vue'
 import Tables from './views/Tables.vue'
-import UIElements from './views/UIElements.vue'
+import MyProject from './views/MyProjects.vue'
 import Login from './views/Login.vue'
 import Modal from './views/Modal.vue'
 import Card from './views/Card.vue'
@@ -18,6 +18,12 @@ import Groups from './views/Groups.vue'
 
 
 const routes= [
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
+    meta: { requiresAuth: true } 
+  },
   {
     path: '/',
     name: 'Login',
@@ -41,12 +47,7 @@ const routes= [
     component: Register,
     meta: { layout: 'empty' },
   },
-  {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: Dashboard,
-    meta: { requiresAuth: true } 
-  },
+  
   {
     path: '/forms',
     name: 'Forms',
@@ -68,9 +69,9 @@ const routes= [
     component: Tables,
   },
   {
-    path: '/ui-elements',
-    name: 'UIElements',
-    component: UIElements,
+    path: '/my-projects',
+    name: 'MyProject',
+    component: MyProject,
   },
   {
     path: '/modal',

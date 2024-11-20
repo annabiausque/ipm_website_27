@@ -16,10 +16,10 @@ const login = async () => {
     email: email.value,
     password: password.value,
   })
-console.log('data', data)
+  console.log('data', data)
   loading.value = false;
   if (!error) {
-    router.push('/dashboard');
+    router.push('/my-projects');
   } else {
     console.error(error.message);
   }
