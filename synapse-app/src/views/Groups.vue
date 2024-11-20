@@ -10,7 +10,15 @@ const email = ref('');
 const loading = ref(false);
 const groups = ref([]);
 const userId = ref('');
+const project = ref('');
 const fetchGroups = async () => {
+    const { data: projectData } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('id', projectId);
+    project.value = projectData[0];
+    console.log(projectData[0]);
+
     const { data: userData, error: userError } = await supabase.auth.getUser();
     if (userError) {
         console.error('Error fetching user:', userError);
@@ -63,8 +71,14 @@ async function addMember(groupId) {
 }
 </script>
 <template>
-    <div class="flex">
-        <span class="ml-4 text-4xl font-semibold text-gray-700">Choose your group</span>
+    <div>
+        <span class="ml-4 text-4xl font-normal text-gray-700">Choose your group</span>
+    </div>
+    <div class="ml-4 mt-2 text-1xl text-gray-700">
+        For project:
+        <span class="text-transparent font-extrabold bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">
+            {{ project.title }}
+        </span>
     </div>
     <div class="items-center justify-items-center justify-center">
 
@@ -77,7 +91,9 @@ async function addMember(groupId) {
                             <img :src="`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${member.user_id}&radius=50&randomizeIds=true`"
                                 alt="Member Avatar"
                                 class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2">
-                            <span class="text-center text-sm font-semibold">
+                            <span
+                                :class="{ 'text-blue-500': member.user_id == userId, 'text-gray-700': member.user_id != userId }"
+                                class="text-center text-sm font-semibold">
                                 {{ member.user_id == userId ? "You" : member.username }}
                             </span>
                         </div>

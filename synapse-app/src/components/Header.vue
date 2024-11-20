@@ -1,5 +1,5 @@
 <script setup lang="js">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useSidebar } from '../composables/useSidebar'
 import { useRouter } from 'vue-router'
 import { supabase } from '../lib/supabaseClient'
@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabaseClient'
 const dropdownOpen = ref(false)
 const { isOpen } = useSidebar()
 const router = useRouter()
+let user = ref('')
 const logout = async () => {
   console.log('logout');
   const { error } = await supabase.auth.signOut();
@@ -17,11 +18,19 @@ const logout = async () => {
   }
 }
 
-  const profile = () => {
-    console.log('Profile');
-    router.push('/profile')
-  }
-  
+onMounted(async () => {
+
+  const user_db = await supabase.auth.getUser()
+
+  user.value = user_db.data.user.user_metadata;
+  console.log('user', user.value);
+});
+
+const profile = () => {
+  console.log('Profile');
+  router.push('/profile')
+}
+
 </script>
 
 <template>
@@ -49,9 +58,7 @@ const logout = async () => {
       <div class="relative">
         <button class="relative z-10 block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none"
           @click="dropdownOpen = !dropdownOpen">
-          <img class="object-cover w-full h-full"
-            src="https://images.unsplash.com/photo-1528892952291-009c663ce843?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=296&q=80"
-            alt="Your avatar">
+          <img :src="`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.sub}&radius=50&randomizeIds=true`">
         </button>
 
         <div v-show="dropdownOpen" class="fixed inset-0 z-10 w-full h-full" @click="dropdownOpen = false" />
@@ -61,7 +68,20 @@ const logout = async () => {
           leave-active-class="transition duration-150 ease-in transform" leave-from-class="scale-100 opacity-100"
           leave-to-class="scale-95 opacity-0">
           <div v-show="dropdownOpen" class="absolute right-0 z-20 w-48 py-2 mt-2 bg-white rounded-md shadow-xl">
-            <div @click="profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Profile</div>
+            <div class="block px-4 text-xl text-gray-700">
+              Hello, <span class="font-semibold"> {{ user.username }} </span>
+            </div>
+            <div class="block px-4 text-xs text-gray-700">
+              You are a
+              <span
+                class="text-transparent text-xs font-semibold bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">
+                {{ user.isTeacher ? "Teacher" : "Student" }}
+              </span>
+            </div>
+            <hr class="border-t my-2 mb-6 border-gray-300 ">
+
+            <div @click="profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">
+              Profile</div>
             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Products</a>
             <div @click="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">
               Log out
