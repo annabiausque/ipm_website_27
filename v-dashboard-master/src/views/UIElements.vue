@@ -1,8 +1,21 @@
 <script setup lang="ts">
 import { useTableData } from '../composables/useTableData'
 import { useRouter } from 'vue-router'
-const router = useRouter()
 
+const router = useRouter()
+import { ref, onMounted } from 'vue'
+import { supabase } from '../lib/supabaseClient'
+
+const projects = ref([])
+
+async function getProjects() {
+    const { data } = await supabase.from('projects').select()
+    projects.value = data
+}
+
+onMounted(() => {
+    getProjects()
+})
 const {
   simpleTableData,
   paginatedTableData,
@@ -87,15 +100,15 @@ const joinProject = () => {
               </thead>
               <tbody>
                 <tr
-                  v-for="(i, index) in simpleTableData"
-                  :key="index"
+                  v-for="(project, id) in projects"
+                  :key="id"
                   class="hover:bg-gray-200"
                 >
                   <td class="px-10 py-4 text-lg text-gray-700 border-b">
-                    {{ i.city }}
+                    {{ project.title }}
                   </td>
                   <td class="px-20 py-4 text-gray-500 border-b text-right">
-                    {{ i.totalOrders }}
+                    {{ project.end_date }}
                   </td>
                 </tr>
               </tbody>
