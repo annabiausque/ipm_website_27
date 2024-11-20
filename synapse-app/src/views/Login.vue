@@ -19,7 +19,7 @@ const login = async () => {
   console.log('data', data)
   loading.value = false;
   if (!error) {
-    router.push('/my-projects');
+    router.push('welcome');
   } else {
     console.error(error.message);
   }

@@ -16,6 +16,7 @@ import Register from './views/Register.vue'
 import Code from './views/Code.vue'
 import Groups from './views/Groups.vue'
 import Match from './views/Match.vue'
+import WelcomeScreen from './views/WelcomeScreen.vue'
 
 
 const routes= [
@@ -29,6 +30,12 @@ const routes= [
     path: '/',
     name: 'Login',
     component: Login,
+    meta: { layout: 'empty' },
+  },
+    {
+    path: '/welcome',
+    name: 'WelcomeScreen',
+    component: WelcomeScreen,
     meta: { layout: 'empty' },
   },
     {
