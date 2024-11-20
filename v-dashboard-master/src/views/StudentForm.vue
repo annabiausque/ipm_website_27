@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 
+const min = 1; // Adjusted minimum value (e.g., allowing less than 1)
+const minThreshold = 1; // Minimum slider value
+const maxThreshold = 5; // Maximum slider value
+const max = ref(1); // Initial max value (can be adjusted)
 interface FAQ {
   id: number
   header: string
@@ -106,6 +110,19 @@ const options = ref([
     </span>
   </div>
 </form>
+<div>
+  <label class="block text-sm font-medium text-gray-900">Select Max Value</label>
+<div class="flex items-center space-x-2">
+  <input 
+    type="range" 
+    class="w-full" 
+    :min="minThreshold" 
+    :max="maxThreshold" 
+    v-model="max"
+  >
+  <span class="text-gray-700">{{ max }}</span>
+</div>
+  </div>
           </div>
         </div>
       </div>
