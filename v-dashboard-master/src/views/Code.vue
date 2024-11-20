@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { supabase } from '../lib/supabaseClient';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 interface FAQ {
   id: number
   header: string
@@ -52,7 +54,8 @@ const signUserToProject = async () => {
     .insert({ project_id: project_id, user_id: userData?.user?.id })
 
   console.log("User signed to project");
-
+  //redirect user to /groups tab
+  router.push('/groups');
 }
 </script>
 
