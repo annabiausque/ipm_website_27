@@ -4,7 +4,7 @@ import {supabase}  from './lib/supabaseClient';
 import Dashboard from './views/Dashboard.vue'
 import Forms from './views/Forms.vue'
 import Tables from './views/Tables.vue'
-import MyProject from './views/MyProjects.vue'
+import MyProjects from './views/MyProjects.vue'
 import Login from './views/Login.vue'
 import Modal from './views/Modal.vue'
 
@@ -67,8 +67,8 @@ const routes= [
   },
   {
     path: '/my-projects',
-    name: 'MyProject',
-    component: MyProject,
+    name: 'MyProjects',
+    component: MyProjects,
   },
   {
     path: '/modal',
