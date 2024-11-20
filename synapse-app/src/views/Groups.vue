@@ -9,8 +9,15 @@ const projectId = route.params.projectId;
 const email = ref('');
 const loading = ref(false);
 const groups = ref([]);
-
+const userId = ref('');
 const fetchGroups = async () => {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError) {
+        console.error('Error fetching user:', userError);
+        return;
+    }
+    userId.value = userData?.user?.id;
+    console.log(userData?.user?.id);
     console.log('Project ID:', projectId);
     const { data: groupsData } = await supabase
         .from('groups_with_members')
@@ -66,9 +73,14 @@ async function addMember(groupId) {
                 <div class="uppercase tracking-wide text-l text-indigo-500 font-semibold">Group: {{ group.name }}</div>
                 <div class="flex mt-4 space-x-5 justify-center overflow-x-hidden">
                     <div v-for="member in group.members" :key="member.id">
-                        <img :src="`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${member.user_id}&radius=50&randomizeIds=true`"
-                            alt="Member Avatar">
-                        {{ member.username }}
+                        <div class="flex flex-col items-center space-y-2">
+                            <img :src="`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${member.user_id}&radius=50&randomizeIds=true`"
+                                alt="Member Avatar"
+                                class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2">
+                            <span class="text-center text-sm font-semibold">
+                                {{ member.user_id == userId ? "You" : member.username }}
+                            </span>
+                        </div>
                     </div>
                     <div v-for="member_free_slot in group.free_spots - 1" draggable="false" @click="addMember(group.id)"
                         class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2 border-gray-300 border-dotted flex items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-100">
