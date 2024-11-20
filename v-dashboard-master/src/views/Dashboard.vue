@@ -9,7 +9,6 @@ onMounted(async () => {
   console.log(user_db.data.user.user_metadata);
 
   user.value = user_db.data.user.user_metadata;
-  console.log('uu');
 
 
   loading.value = false;
