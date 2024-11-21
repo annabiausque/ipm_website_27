@@ -12,7 +12,7 @@ const inactiveClass = ref(
   'border-gray-900 text-gray-500 hover:bg-gray-600 hover:bg-opacity-25 hover:text-gray-100',
 )
 
-const isTeacher = ref(false) // Détermine si l'utilisateur est un enseignant
+const isTeacher = ref(false) 
 
 async function checkIfTeacher() {
   const { data: sessionData } = await supabase.auth.getSession()
@@ -23,7 +23,7 @@ async function checkIfTeacher() {
       .from('profiles')
       .select('is_teacher')
       .eq('id', userId)
-      .single() // Récupère une seule ligne
+      .single() 
 
     if (error) {
       console.error('Erreur lors de la récupération des informations du profil :', error)
