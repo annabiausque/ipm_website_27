@@ -13,6 +13,7 @@ export default {
     const groupId = route.params.id;
     const groupData = ref(null);
     const loading = ref(true);
+    const userID = ref(null);
     
 
     const fetchGroupData = async (groupId) => {
@@ -39,10 +40,73 @@ export default {
       }
     };
 
+    const fetchGroupMembers = async (groupId) => {
+      try {
+        const { data, error } = await supabase
+          .from("users_groups")
+          .select("user_id")
+          .eq("group_id", groupId);
+
+        if (error) {
+          console.error("Erreur Supabase:", error.message);
+          return [];
+        }
+
+        return data.map((item) => item.user_id);
+      } catch (error) {
+        console.error("Erreur inattendue:", error.message);
+        return [];
+      }
+    };
+
+    const fetchUsernameFromID = async(userID) => {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("username")
+          .eq("id", userID);
+
+        if (error) {
+          console.error("Erreur Supabase:", error.message);
+          return null;
+        }
+
+        if (!data || data.length === 0) {
+          console.warn("Aucun utilisateur trouvé avec cet ID.");
+          return null;
+        }
+
+        return data[0];
+      } catch (error) {
+        console.error("Erreur inattendue:", error.message);
+        return null;
+      }
+    }
+
+    const loadGroupUsernames = async () => {
+      try {
+        // Étape 1 : Récupérer les user_id
+        const userIds = await fetchGroupMembers(groupId);
+
+        // Étape 2 : Récupérer les usernames pour chaque user_id
+        const promises = userIds.map((id) => fetchUsernameFromID(id));
+        const results = await Promise.all(promises);
+
+        // Filtrer les résultats non valides (null ou undefined)
+        usernames.value = results.filter((username) => username !== null).map((user) => user.username);
+      } catch (error) {
+        console.error("Erreur lors du chargement des usernames :", error.message);
+      } finally {
+        loading.value = false; // Fin du chargement
+      }
+    };
+
     onMounted(async () => {
       console.log("Group ID:", groupId);
       groupData.value = await fetchGroupData(groupId);
       loading.value = false;
+      loadGroupUsernames();
+
     });
 
     return { groupData, loading };
@@ -76,7 +140,9 @@ export default {
             
             <div v-else-if="groupData" >
               <h3 class="text-lg font-medium text-gray-800">Group members </h3>
-              <p class="mt-2 text-gray-600"></p>
+             <li v-for="(username, index) in usernames" :key="index" class="py-2">
+        <span class="text-gray-800">{{ username }}</span>
+      </li>
               <h3 class="mt-4 text-lg font-medium text-gray-800">Skills </h3>
               <p class="mt-2 text-gray-600">{{ (groupData.skills_list || []).join(", ") }}</p>
             </div>
