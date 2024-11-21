@@ -46,6 +46,25 @@ async function getProjects() {
   }
 }
 
+async function getGroups() {
+  try {
+    const { data, error } = await supabase
+      .from('users_groups')
+      .select('group_id, project_id')
+      .eq('user_id', userId.value);
+
+    if (error) {
+      console.error('An error happened while fetching the data for the groups', error.message);
+      return []; 
+    }
+
+    return data || []; 
+  } catch (error) {
+    console.error('An error happened while fetching thz groups', error.message);
+    return []; 
+  }
+}
+
 // Function to fetch the user ID
 async function fetchUserId() {
   try {
