@@ -23,9 +23,8 @@
             </a>
             <a href="#">
               <p class="mb-2 text-l font-semibold tracking-tight text-gray-900 dark:text-white">
-                Skills: {{ (card.skills_list || []).join(', ') }}
+                Skills: {{ (card.skills_list || []).join(", ") }}
               </p>
-
             </a>
             <a href="#">
               <p class="mb-2 text-l font-semibold tracking-tight text-gray-900 dark:text-white">
@@ -74,6 +73,9 @@ export default {
     const noGroupsLeft = ref(false);
 
     const onSwipe = (direction) => {
+      const currentCard = stack.value[stack.value.length - 1]; // Dernière carte du stack
+      if (!currentCard) return; // Si aucune carte restante, ne rien faire
+
       const cardElement = document.querySelector(".card");
       if (cardElement) {
         cardElement.classList.add(direction === "swipe-left" ? "swipe-left" : "swipe-right");
@@ -81,10 +83,11 @@ export default {
 
       if (direction === "swipe-right") {
         createHeartEffect();
+        addUserToGroup(currentCard.id); // Ajouter l'utilisateur au groupe correspondant
       }
 
       setTimeout(() => {
-        stack.value.pop();
+        stack.value.pop(); // Supprime la dernière carte
         noGroupsLeft.value = stack.value.length === 0;
         if (cardElement) {
           cardElement.classList.remove("swipe-left", "swipe-right");
@@ -109,12 +112,26 @@ export default {
           heart.remove();
         }, 5000);
       }
+
+      // Change background to pink temporarily
+      document.body.style.backgroundColor = "pink";
+      setTimeout(() => {
+        document.body.style.backgroundColor = ""; // Reset background
+      }, 500);
     };
 
-    const scrollToAnchor = (anchorId) => {
-      const target = document.getElementById(anchorId);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
+    const addUserToGroup = async (groupId) => {
+      try {
+        const { data, error } = await supabase.from("users_groups").insert([{ group_id: groupId, user_id: route.params.userId }]);
+
+        if (error) {
+          console.error("Error while adding the user to the group:", error.message);
+          return;
+        }
+
+        console.log("User successfully added to the group:", data);
+      } catch (error) {
+        console.error("Unexpected error while adding the user to the group:", error.message);
       }
     };
 
@@ -123,8 +140,7 @@ export default {
         const { data, error } = await supabase
           .from("groups")
           .select("id, name, avatar, skills_list")
-          .eq("project_id", route.params.projectId)
-          .order("id", { ascending: false });
+          .eq("project_id", route.params.projectId);
 
         if (error) {
           console.error("Erreur lors de la récupération des informations du groupe:", error.message);
@@ -147,13 +163,11 @@ export default {
       noGroupsLeft,
       onSwipe,
       onClick,
-      scrollToAnchor,
       createHeartEffect,
     };
   },
 };
 </script>
-
 
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css";
