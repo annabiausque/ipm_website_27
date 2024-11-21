@@ -19,6 +19,7 @@ const faq: FAQ = {
 
 const activeFaq = ref<number | null>(null)
 const codeInput = ref<string>('')
+const codeError = ref<string | null>(null)
 
 const handleToggle = () => {
   activeFaq.value = activeFaq.value === faq.id ? null : faq.id
@@ -29,7 +30,26 @@ const handleQuestionClick = (event: MouseEvent) => {
   // No action, just prevent the default behavior (like navigation)
 }
 
+const transformToUppercase = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  codeInput.value = target.value.toUpperCase();
+}
+
+const verifyCode = () => {
+  const codeFormat = /^[A-Z]{2}\d{2}[A-Z]$/;
+  if (codeFormat.test(codeInput.value)) {
+    codeError.value = null;
+    return true;
+  } else {
+    codeError.value = 'Code is invalid. It should be in the format: two letters, two digits, and a letter (e.g., AB12C)';
+    return false;
+  }
+}
+
 const signUserToProject = async () => {
+  if (!verifyCode()) {
+    return;
+  }
   let project_id: string = "";
   //select the project
   const { data } = await supabase
@@ -87,13 +107,15 @@ const signUserToProject = async () => {
               </div>
 
               <!-- Input Section -->
-              <div class="mb-6">
+              <div class="mb-2">
                 <input v-model="codeInput" type="text" placeholder="Provide the code to join the project :)"
+                  @input="transformToUppercase" @keydown.enter.prevent="signUserToProject"
                   class="w-full px-5 py-3 text-base bg-transparent border rounded-md outline-none border-stroke text-body-color dark:border-dark-3 focus:border-primary focus-visible:shadow-none text-center" />
               </div>
+              <div v-if="codeError" class="text-left text-red-500 text-sm mt-1">{{ codeError }}</div>
 
               <!-- Buttons Section (Submit + ? button) -->
-              <div class="flex items-center justify-start space-x-4">
+              <div class="mt-12 flex items-center justify-start space-x-4">
                 <!-- Submit Button -->
                 <a @click="signUserToProject"
                   class="bg-indigo-800 border-indigo-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500">
