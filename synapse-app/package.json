@@ -29,7 +29,8 @@
     "vue-swipy": "^0.1.1",
     "vue-tailwind-datepicker": "^1.7.3",
     "vue3-interact": "^1.0.0",
-    "vue3-touch-events": "^4.2.0"
+    "vue3-touch-events": "^4.2.0",
+    "vuetify": "^3.7.4"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.8.0",

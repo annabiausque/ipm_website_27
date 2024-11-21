@@ -8,7 +8,7 @@ const router = useRouter();
 const loading = ref(false);
 const email = ref('');
 const password = ref('');
-
+const snackbar = ref(false);
 const login = async () => {
   console.log('login');
   loading.value = true;
@@ -21,6 +21,7 @@ const login = async () => {
   if (!error) {
     router.push('welcome');
   } else {
+    snackbar.value = true;
     console.error(error.message);
   }
 };
@@ -28,6 +29,10 @@ const login = async () => {
 </script>
 
 <template>
+
+  <!-- <v-snackbar v-model="snackbar" color="error" timeout="3000" top>
+    Bad username or password
+  </v-snackbar> -->
   <div class="flex items-center justify-center h-screen px-6 bg-gray-200">
     <div class="w-full max-w-sm p-6 bg-white rounded-md shadow-md">
       <div class="flex items-center justify-center">
