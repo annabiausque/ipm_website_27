@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const min = 1; // Adjusted minimum value (e.g., allowing less than 1)
-const minThreshold = 1; // Minimum slider value
-const maxThreshold = 5; // Maximum slider value
-const max = ref(1); // Initial max value (can be adjusted)
+// Reactive state for toggling the button's background and text color
+const isBlack = ref(false);
+
+// Function to toggle the button state
+const toggleColor = () => {
+  isBlack.value = !isBlack.value;
+};
+
 interface FAQ {
   id: number
   header: string
@@ -17,31 +21,29 @@ const faq: FAQ = {
   text: "To join the project, ask your teacher for the code."
 }
 
-const activeFaq = ref<number | null>(null)
+const activeFaq = ref<number | null>(null);
 
 const handleToggle = () => {
-  activeFaq.value = activeFaq.value === faq.id ? null : faq.id
-}
+  activeFaq.value = activeFaq.value === faq.id ? null : faq.id;
+};
 
 const handleQuestionClick = (event: MouseEvent) => {
   event.preventDefault(); // Prevent any default action if needed
-  // No action, just prevent the default behavior (like navigation)
-}
+};
 
-import { ref } from 'vue'
-const defaultSelectValue = ref('')
-const selectedCountry = ref('')
+const defaultSelectValue = ref('');
+const selectedCountry = ref('');
 
 const items = ref([
   { label: 'Design', showIcon: true },
   { label: 'Design', showIcon: true },
   { label: 'Design', showIcon: true }
-])
+]);
 
 const options = ref([
   { label: 'Option 1', value: 'option1' },
   { label: 'Option 2', value: 'option2' }
-])
+]);
 </script>
 
 <template>
@@ -49,80 +51,62 @@ const options = ref([
   <section class="bg-gray-1 dark:bg-dark py-30 lg:py-20">
     <div class="container mx-auto mt-[10px]"> <!-- Added negative margin to move window up -->
       <div class="flex flex-wrap -mx-7">
-      
         <div class="w-full px-4">
-        
           <div
             class="relative mx-auto max-w-[550px] overflow-hidden rounded-lg bg-white py-10 px-10 text-center sm:px-12 md:px-[60px] dark:bg-dark-2"
           >
             <form>
-  <!-- Synapse Section -->
-  <div class="flex items-center justify-center mb-6"> <!-- Added mb-6 for margin-bottom -->
-    <img src="../assets/logo_indigo.png" class="w-16 h-16">
-    <span class="ml-4 text-2xl font-semibold text-gray-700">Synapse</span>
-  </div>
+              <!-- Synapse Section -->
+              <div class="flex items-center justify-center mb-6">
+                <img src="../assets/logo_indigo.png" class="w-16 h-16">
+                <span class="ml-4 text-2xl font-semibold text-gray-700">Synapse</span>
+              </div>
 
-<div class="mb-12 flex items-center justify-between">
-  <label for="" class="mr-4 text-base font-medium text-dark dark:text-white">
-    I am looking for a group with
-  </label>
-  <div class="relative z-20 flex-1 ml-[-30px]">
-    <select
-      v-model="defaultSelectValue"
-      class="relative z-20 w-1/3 appearance-none rounded-lg border border-stroke dark:border-dark-3 bg-transparent py-[6px] px-3 text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2"
-    >
-      <option value="" class="dark:bg-dark-2">0</option>
-      <option value="" class="dark:bg-dark-2">1</option>
-      <option value="" class="dark:bg-dark-2">2</option>
-    </select>
-    <span class="ml-2 text-base font-medium text-dark dark:text-white">free spots</span>
-  </div>
-</div>
-
-
-  <!-- Buttons Section (Submit + ? button) -->
-  <div class="flex items-center justify-start space-x-4">
-    <!-- Submit Button -->
-    <a
-      href="javascript:void(0)"
-      class="bg-indigo-800 border-indigo-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500"
-    >
-      Search!
-    </a>
-
-    <!-- ? Button -->
-    <span class="group relative inline-block">
-      <button
-        type="button"
-        class="bg-primary inline-flex rounded py-2 px-[13px] text-base font-medium text-grey-800"
-        @click="handleQuestionClick"
-      >
-        ?
-      </button>
-      <div
-        class="text-dark dark:text-black shadow-1 dark:shadow-none absolute left-full top-1/2 z-20 ml-3 -translate-y-1/2 whitespace-nowrap rounded-[5px] bg-gray-300 dark:bg-dark-2 py-1.5 px-3.5 text-sm opacity-0 group-hover:opacity-100"
-      >
-        <span
-          class="absolute -left-1 top-1/2 -z-10 h-2 w-2 -translate-y-1/2 rotate-45 bg-gray-300 dark:bg-dark-2"
-        ></span>
-        Set as 0 if you want to register your own group.
-      </div>
-    </span>
-  </div>
-</form>
-<div>
-  <label class="block text-sm font-medium text-gray-900">Select Max Value</label>
-<div class="flex items-center space-x-2">
-  <input 
-    type="range" 
-    class="w-full" 
-    :min="minThreshold" 
-    :max="maxThreshold" 
-    v-model="max"
+              <div class="mb-12 flex items-center justify-between">
+                <label for="" class="mr-4 text-base font-medium text-dark dark:text-white">
+                  I am looking for a group with
+                </label>
+                <div class="relative z-20 flex-1 ml-[-30px] group">
+                  <select
+                    v-model="defaultSelectValue"
+                    class="relative z-20 w-1/3 appearance-none rounded-lg border border-stroke dark:border-dark-3 bg-transparent py-[6px] px-3 text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2"
+                  >
+                    <option value="" class="dark:bg-dark-2">0</option>
+                    <option value="" class="dark:bg-dark-2">1</option>
+                    <option value="" class="dark:bg-dark-2">2</option>
+                  </select>
+                  <span class="ml-2 text-base font-medium text-dark dark:text-white">free spots</span>
+                  
+                  <!-- Tooltip -->
+                  <div
+                    class="absolute left-0 mt-2 hidden w-[220px] rounded-lg bg-gray-300 dark:bg-dark-2 p-2 text-sm text-dark dark:text-white group-hover:block"
+                  >
+                    Set as 0 if you want to register your own group.
+                  </div>
+                </div>
+              </div>
+              <button
+    @click="toggleColor"
+    :class="[
+      'mt-4 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium shadow-sm',
+      isBlack ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300'
+    ]"
+    type="button"
   >
-  <span class="text-gray-700">{{ max }}</span>
-</div>
-  </div>
+    {{ isBlack ? 'Black Button' : 'White Button' }}
+  </button>
+
+              <!-- Buttons Section -->
+              <div class="flex justify-center mt-6">
+                <!-- Submit Button -->
+                <a
+                  href="javascript:void(0)"
+                  class="bg-indigo-800 border-indigo-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500"
+                >
+                  Search!
+                </a>
+              </div>
+            </form>
           </div>
         </div>
       </div>

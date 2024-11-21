@@ -4,7 +4,7 @@ import {supabase}  from './lib/supabaseClient';
 import Dashboard from './views/Dashboard.vue'
 import Forms from './views/Forms.vue'
 import Tables from './views/Tables.vue'
-import MyProject from './views/MyProjects.vue'
+import MyProjects from './views/MyProjects.vue'
 import Login from './views/Login.vue'
 import Modal from './views/Modal.vue'
 
@@ -16,6 +16,7 @@ import Register from './views/Register.vue'
 import Code from './views/Code.vue'
 import Groups from './views/Groups.vue'
 import Match from './views/Match.vue'
+import WelcomeScreen from './views/WelcomeScreen.vue'
 
 
 const routes= [
@@ -32,13 +33,19 @@ const routes= [
     meta: { layout: 'empty' },
   },
     {
+    path: '/welcome',
+    name: 'WelcomeScreen',
+    component: WelcomeScreen,
+    meta: { layout: 'empty' },
+  },
+    {
     path: '/reset-password',
     name: 'ResetPassword',
     component: ResetPassword,
     meta: { layout: 'empty' },
   },
       {
-    path: '/groups',
+    path: '/groups/:projectId',
     name: 'Groups',
     component: Groups,
   },
@@ -67,8 +74,8 @@ const routes= [
   },
   {
     path: '/my-projects',
-    name: 'MyProject',
-    component: MyProject,
+    name: 'MyProjects',
+    component: MyProjects,
   },
   {
     path: '/modal',
