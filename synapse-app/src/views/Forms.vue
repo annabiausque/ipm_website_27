@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabaseClient';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import VueTailwindDatepicker from "vue-tailwind-datepicker";
-
+import { useSnackbar } from 'vue3-snackbar';
 const title = ref('');
 const description = ref('');
 const dateValue = ref([]);
@@ -15,7 +15,7 @@ const subject = ref('');
 const numberOfGroups = ref(1);
 const newSkill = ref('');
 const skills = ref([]);
-
+const snackbar = useSnackbar();
 const router = useRouter();
 
 onMounted(async () => {

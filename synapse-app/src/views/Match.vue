@@ -63,6 +63,8 @@ import { Swipeable } from "vue-swipy";
 import { supabase } from "../lib/supabaseClient";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
+
 
 export default {
   name: "Match",
@@ -71,23 +73,32 @@ export default {
     const route = useRoute();
     const stack = ref([]);
     const noGroupsLeft = ref(false);
+    const router = useRouter();
 
     const onSwipe = (direction) => {
-      const currentCard = stack.value[stack.value.length - 1]; // Dernière carte du stack
-      if (!currentCard) return; // Si aucune carte restante, ne rien faire
+      const currentCard = stack.value[stack.value.length - 1]; 
+      if (!currentCard) return; 
 
       const cardElement = document.querySelector(".card");
       if (cardElement) {
         cardElement.classList.add(direction === "swipe-left" ? "swipe-left" : "swipe-right");
       }
-
       if (direction === "swipe-right") {
-        createHeartEffect();
-        addUserToGroup(currentCard.id); // Ajouter l'utilisateur au groupe correspondant
-      }
+  createHeartEffect(); 
+  addUserToGroup(currentCard.id); 
+
+  router.push({
+    name: 'GotMatch',
+    params: { 
+      projectId: projectId, 
+      groupId: currentCard.id 
+    }
+  });
+}
+
 
       setTimeout(() => {
-        stack.value.pop(); // Supprime la dernière carte
+        stack.value.pop(); 
         noGroupsLeft.value = stack.value.length === 0;
         if (cardElement) {
           cardElement.classList.remove("swipe-left", "swipe-right");
@@ -113,10 +124,10 @@ export default {
         }, 5000);
       }
 
-      // Change background to pink temporarily
+    
       document.body.style.backgroundColor = "pink";
       setTimeout(() => {
-        document.body.style.backgroundColor = ""; // Reset background
+        document.body.style.backgroundColor = ""; 
       }, 500);
     };
 

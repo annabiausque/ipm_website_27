@@ -19,6 +19,7 @@ import Match from './views/Match.vue'
 import SingleGroup from './views/SingleGroup.vue'
 import Profile from './views/Profile.vue';
 import WelcomeScreen from './views/WelcomeScreen.vue'
+import GotMatch from './views/GotMatch.vue'
 
 
 const routes= [
@@ -102,6 +103,11 @@ const routes= [
     path: '/match/:projectId',
     name: 'Match',
     component: Match,
+  },
+  {
+    path: '/gotmatch/:projectId/:groupId',
+    name: 'GotMatch',
+    component: GotMatch,
   },
   {
     path: '/singlegroup/:id',

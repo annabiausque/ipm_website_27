@@ -29,6 +29,7 @@
     "vue-swipy": "^0.1.1",
     "vue-tailwind-datepicker": "^1.7.3",
     "vue3-interact": "^1.0.0",
+    "vue3-snackbar": "^2.3.4",
     "vue3-touch-events": "^4.2.0",
     "vuetify": "^3.7.4"
   },
