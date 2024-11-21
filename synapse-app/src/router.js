@@ -100,6 +100,12 @@ const routes= [
     path: '/singlegroup/:id',
     name: 'SingleGroup',
     component: SingleGroup,
+  },
+    {
+    path: '/profile/:id',
+    name: 'Profile',
+    component: Profile,
+    meta: { requiresAuth: true }
   }
   
 ]
