@@ -74,7 +74,7 @@ async function createProject() {
 
       localStorage.setItem('notification', 'Your new project was successfully created!');
 
-      router.push('/dashboard');
+      router.push('/my-projects');
     }
   } catch (projectError) {
     console.error('Erreur lors de la création du projet:', projectError.message);
