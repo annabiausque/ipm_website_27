@@ -49,9 +49,9 @@ export default {
 <template>
   <div class="bg-gray-50 py-24 sm:py-32">
     <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-      <h2 class="text-center text-base/7 font-semibold text-indigo-600">Détails du Groupe</h2>
+      <h2 class="text-center text-base/7 font-semibold text-indigo-600">Project name</h2>
       <p class="mx-auto mt-2 max-w-lg text-balance text-center text-4xl font-semibold tracking-tight text-gray-950 sm:text-5xl">
-        Informations
+     {{ groupData.name }}
       </p>
       <div class="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2">
         <div class="relative lg:row-span-2">
@@ -60,13 +60,13 @@ export default {
             class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-l-[calc(2rem+1px)]"
           >
             <div v-if="loading" class="text-center py-12">
-              <p class="text-gray-500 text-lg">Chargement en cours...</p>
+              <p class="text-gray-500 text-lg">Loading...</p>
             </div>
             <div v-else-if="groupData" class="p-8">
               <h3 class="text-lg font-medium text-gray-800">Nom du groupe :</h3>
-              <p class="mt-2 text-gray-600">{{ groupData.name }}</p>
-              <h3 class="mt-4 text-lg font-medium text-gray-800">Description :</h3>
-              <p class="mt-2 text-gray-600">{{ groupData.description }}</p>
+              <p class="mt-2 text-gray-600"></p>
+              <h3 class="mt-4 text-lg font-medium text-gray-800">Skills :</h3>
+              <p class="mt-2 text-gray-600">{{ (groupData.skills_list || []).join(", ") }}</p>
             </div>
             <div v-else class="text-center py-12">
               <p class="text-gray-500 text-lg">Aucun groupe trouvé.</p>
@@ -136,7 +136,7 @@ export default {
           >
             <div class="px-8 pb-3 pt-8 sm:px-10 sm:pb-0 sm:pt-10">
               <p class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
-                Powerful APIs
+                Ressources
               </p>
               <p class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
                 Sit quis amet rutrum tellus ullamcorper ultricies libero dolor eget sem
