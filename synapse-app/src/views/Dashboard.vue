@@ -3,14 +3,20 @@ import { onMounted, ref } from 'vue'
 import { supabase } from '../lib/supabaseClient'
 let user = ref('')
 let loading = ref(true)
+const notification = ref(null);
 onMounted(async () => {
 
   const user_db = await supabase.auth.getUser()
   console.log(user_db.data.user.user_metadata);
 
   user.value = user_db.data.user.user_metadata;
-
-
+  notification.value = localStorage.getItem('notification'); 
+  if (notification.value) {
+    setTimeout(() => {
+      notification.value = null; 
+      localStorage.removeItem('notification'); 
+    }, 5000);
+  }
   loading.value = false;
 });
 
@@ -28,9 +34,16 @@ const users = ref([...Array(10).keys()].map(() => testUser))
 
 <template>
   <div>
+    <div v-if="notification" class="notification-banner bg-green-500 text-white p-4 rounded mb-4">
+      {{ notification }}
+    </div>
+
+
     <h3 class="text-3xl font-medium text-gray-700">
       Dashboard
     </h3>
+  
+  
     <div v-if="loading == false" class="mt-4 text-xl font-semibold text-gray-700">
       Hello, {{ user.username }}
     </div>
@@ -207,3 +220,20 @@ const users = ref([...Array(10).keys()].map(() => testUser))
     </div>
   </div>
 </template>
+
+<style scoped>
+.notification-banner {
+  animation: fade-in-out 0.5s ease-in-out;
+}
+
+@keyframes fade-in-out {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

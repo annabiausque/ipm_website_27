@@ -2,6 +2,7 @@
 
 import { supabase } from '../lib/supabaseClient';
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import VueTailwindDatepicker from "vue-tailwind-datepicker";
 
 const title = ref('');
@@ -15,7 +16,7 @@ const numberOfGroups = ref(1);
 const newSkill = ref(''); 
 const skills = ref([]); 
 
-
+const router = useRouter();
 
 onMounted(async () => {
   const { data } = await supabase.auth.getSession();
@@ -55,6 +56,8 @@ async function createProject() {
       console.error('Erreur lors de la création du projet:', error.message);
     } else {
       console.log('Projet créé avec succès:', data);
+      localStorage.setItem('notification', 'Your new project was successfully created!'); 
+      router.push('/dashboard' );
     }
   } catch (error) {
     console.error('Erreur lors de la création du projet:', error.message);

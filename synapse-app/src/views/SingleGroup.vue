@@ -261,8 +261,54 @@
 </template>
 
 <script lang="js">
+import { useRoute } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import { supabase } from '../lib/supabaseClient';
+
+export default {
+  name: 'SingleGroup',
+  setup() {
+    const route = useRoute();
+    const groupId = route.params.id;
+    const groupData = ref(null);
+    const loading = ref(true);
+
+    const fetchGroupData = async (groupId) => {
+      try {
+        const { data, error } = await supabase
+          .from('groups')
+          .select('*')
+          .eq('id', groupId);
+
+        if (error) {
+          console.error('Erreur Supabase:', error.message);
+          return null;
+        }
+
+        if (data.length === 0) {
+          console.warn('Aucun groupe trouvé avec cet ID.');
+          return null;
+        }
+
+        return data[0];
+      } catch (error) {
+        console.error('Erreur inattendue:', error.message);
+        return null;
+      }
+    };
+
+    onMounted(async () => {
+      console.log('Group ID:', groupId);
+      groupData.value = await fetchGroupData(groupId);
+      loading.value = false;
+    });
+
+    return { groupData, loading };
+  },
+};
 
 </script>
+
 
 <style scoped>
 .overflow-x-auto {

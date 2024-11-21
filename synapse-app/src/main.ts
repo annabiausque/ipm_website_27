@@ -10,6 +10,7 @@ import Vue3TouchEvents, {
   } from "vue3-touch-events";
 
 
+
 import DashboardLayout from './components/DashboardLayout.vue'
 import EmptyLayout from './components/EmptyLayout.vue'
 
@@ -20,6 +21,7 @@ app.use<Vue3TouchEventsOptions>(Vue3TouchEvents, {
     disableClick: false
   })
 app.use(router)
+
 app.use(vueDoubleSlider)
 app.component("vue-tailwind-datepicker",VueTailwindDatepicker)
 

@@ -1,6 +1,7 @@
-<script setup lang="ts">
-import { useTableData } from '../composables/useTableData'
-import { useRouter } from 'vue-router'
+<script setup lang="js">
+import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import { supabase } from '../lib/supabaseClient';
 
 const router = useRouter()
 import { ref, onMounted } from 'vue'
@@ -22,8 +23,14 @@ async function getUserProjects(user_id) {
 }
 
 async function getProjects() {
-  const { data } = await supabase.from('projects').select()
-  projects.value = data
+  const { data, error } = await supabase.from('projects').select();
+
+  if (error) {
+    console.error('An error happened while fetching the projects', error.message);
+    return;
+  }
+
+  projects.value = data || [];
 }
 
 onMounted(async () => {
@@ -37,42 +44,97 @@ const {
   wideTableData,
 } = useTableData()
 
-const { label } = defineProps({ label: String })
+    if (error) {
+      console.error('An error happened while fetching the data for the groups', error.message);
+      return []; 
+    }
 
-const joinProject = () => {
-  // Here, we navigate to the Dashboard route
-  router.push({ name: 'dashboard' });  // Make sure 'dashboard' is the name of your route
+    return data || []; 
+
+
+async function redirectToGroup(projectId) {
+  try {
+    const groups = await getGroups();
+
+    const userGroup = groups.find(group => group.project_id === projectId);
+
+    if (userGroup) {
+      const group_id = userGroup.group_id;
+      console.log('Redirection to the group : ', group_id);
+      router.push({ name: 'SingleGroup', params: { id: group_id } });
+    } else {
+      console.warn('No group associated with this project.');
+      alert('No group associated with this project.');
+  
+      router.push({ name: 'Groups' }); 
+    }
+  } catch (error) {
+    console.error('An error happened during redirection:', error.message);
+    alert('An error happened during redirection.');
+  }
 }
+
+async function fetchUserId() {
+  try {
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error) {
+      console.error('An error happened while fetch the user id', error.message);
+      return null;
+    }
+
+    userId.value = data?.session?.user?.id || null;
+    if (!userId.value) {
+      console.warn('User is not authenticated.');
+    }
+  } catch (error) {
+    console.error('An error happened during the authentification', error.message);
+  }
+}
+
+onMounted(async () => {
+  try {
+    await fetchUserId();
+    if (userId.value) {
+      await getProjects();
+    }
+  } catch (error) {
+    console.error('Erreur lors de l\'initialisation:', error.message);
+  }
+});
 </script>
 
 
 <template>
   <div>
-    <h3 class="text-3xl font-medium text-gray-700">
-      My projects
-    </h3>
+    <h3 class="text-3xl font-medium text-gray-700">My projects</h3>
 
     <div class="mt-4">
-
-
-
-
-
       <div class="mt-6">
-        <router-link class="flex items-center px-6 py-2 mt-4 duration-200 border-l-4"
-          :class="[$route.name === 'Code' ? activeClass : inactiveClass]" to="/code">
-
-
-          <button href="#"
-            class="mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm">
+        <router-link
+          class="flex items-center px-6 py-2 mt-4 duration-200 border-l-4"
+          :class="[$route.name === 'Code' ? 'bg-gray-600 bg-opacity-25 text-gray-100 border-gray-100' : 'border-gray-900 text-gray-500 hover:bg-gray-600 hover:bg-opacity-25 hover:text-gray-100']"
+          to="/code"
+        >
+          <button
+            class="mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm"
+          >
             <span class="pr-[10px]">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
-                class="fill-current">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="fill-current"
+              >
                 <g clip-path="url(#clip0_906_8052)">
                   <path
-                    d="M13.1875 9.28125H10.6875V6.8125C10.6875 6.4375 10.375 6.125 9.96875 6.125C9.59375 6.125 9.28125 6.4375 9.28125 6.84375V9.3125H6.8125C6.4375 9.3125 6.125 9.625 6.125 10.0312C6.125 10.4062 6.4375 10.7187 6.84375 10.7187H9.3125V13.1875C9.3125 13.5625 9.625 13.875 10.0312 13.875C10.4062 13.875 10.7187 13.5625 10.7187 13.1562V10.6875H13.1875C13.5625 10.6875 13.875 10.375 13.875 9.96875C13.875 9.59375 13.5625 9.28125 13.1875 9.28125Z" />
+                    d="M13.1875 9.28125H10.6875V6.8125C10.6875 6.4375 10.375 6.125 9.96875 6.125C9.59375 6.125 9.28125 6.4375 9.28125 6.84375V9.3125H6.8125C6.4375 9.3125 6.125 9.625 6.125 10.0312C6.125 10.4062 6.4375 10.7187 6.84375 10.7187H9.3125V13.1875C9.3125 13.5625 9.625 13.875 10.0312 13.875C10.4062 13.875 10.7187 13.5625 10.7187 13.1562V10.6875H13.1875C13.5625 10.6875 13.875 10.375 13.875 9.96875C13.875 9.59375 13.5625 9.28125 13.1875 9.28125Z"
+                  />
                   <path
-                    d="M10 0.5625C4.78125 0.5625 0.5625 4.78125 0.5625 10C0.5625 15.2188 4.8125 19.4688 10.0312 19.4688C15.25 19.4688 19.5 15.2188 19.5 10C19.4688 4.78125 15.2188 0.5625 10 0.5625ZM10 18.0625C5.5625 18.0625 1.96875 14.4375 1.96875 10C1.96875 5.5625 5.5625 1.96875 10 1.96875C14.4375 1.96875 18.0625 5.5625 18.0625 10C18.0625 14.4375 14.4375 18.0625 10 18.0625Z" />
+                    d="M10 0.5625C4.78125 0.5625 0.5625 4.78125 0.5625 10C0.5625 15.2188 4.8125 19.4688 10.0312 19.4688C15.25 19.4688 19.5 15.2188 19.5 10C19.4688 4.78125 15.2188 0.5625 10 0.5625ZM10 18.0625C5.5625 18.0625 1.96875 14.4375 1.96875 10C1.96875 5.5625 5.5625 1.96875 10 1.96875C14.4375 1.96875 18.0625 5.5625 18.0625 10C18.0625 14.4375 14.4375 18.0625 10 18.0625Z"
+                  />
                 </g>
                 <defs>
                   <clipPath id="clip0_906_8052">
@@ -86,7 +148,6 @@ const joinProject = () => {
         </router-link>
 
         <div class="my-6 overflow-hidden bg-white rounded-md shadow">
-
           <table class="w-full text-left border-collapse">
             <thead class="border-b">
               <tr>
@@ -99,8 +160,15 @@ const joinProject = () => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(project, id) in projects" :key="id" class="hover:bg-gray-200">
-                <td class="px-10 py-4 text-lg text-gray-700 border-b">
+              <tr
+                v-for="(project, id) in projects"
+                :key="id"
+                class="hover:bg-gray-200"
+              >
+                <td
+                  class="px-10 py-4 text-lg text-gray-700 border-b cursor-pointer"
+                  @click="redirectToGroup(project.id)"
+                >
                   {{ project.title }}
                 </td>
                 <td class="px-20 py-4 text-gray-500 border-b text-right">
@@ -112,6 +180,12 @@ const joinProject = () => {
         </div>
       </div>
     </div>
+  </div>
+
+</template>
+
+
+
 
     <!-- Alerts 
     
@@ -364,5 +438,4 @@ const joinProject = () => {
       </div>
     </div>
     -->
-  </div>
-</template>
+
