@@ -163,7 +163,7 @@ onMounted(async () => {
             <div>
                 <div class="bg-white shadow rounded-lg p-6">                
 
-                    <div v-if="!user.isTeacher">
+                    <div v-if="!user.is_teacher">
 
                         <h2 class="text-xl font-bold mb-3">Preferences</h2>
                         <div class="mb-6">
