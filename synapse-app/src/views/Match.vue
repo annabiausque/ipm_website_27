@@ -80,7 +80,7 @@ export default {
     }
 
     if (direction === "swipe-right") {
-      this.createHeartEffect(); // Génère des cœurs
+      this.createHeartEffect(); 
     }
 
     setTimeout(() => {

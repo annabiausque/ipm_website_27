@@ -5,6 +5,9 @@ import { supabase } from '../lib/supabaseClient';
 
 const router = useRouter();
 const projects = ref([]);
+const userId = ref(null);
+const groups = ref([]);
+
 
 async function getProjects() {
   const { data, error } = await supabase.from('projects').select();
@@ -16,14 +19,77 @@ async function getProjects() {
 
   projects.value = data || [];
 }
+async function getGroups() {
+  try {
+    const { data, error } = await supabase
+      .from('users_groups')
+      .select('group_id, project_id')
+      .eq('user_id', userId.value);
 
-function redirectToGroup(id) {
-  router.push({ name: 'SingleGroup', params: { id } }); // Redirige vers la route avec l'ID du projet
+    if (error) {
+      console.error('Erreur lors de la récupération des informations des groupes:', error.message);
+      return []; // Renvoie un tableau vide en cas d'erreur
+    }
+
+    return data || []; // Renvoie les données ou un tableau vide si aucune donnée
+  } catch (error) {
+    console.error('Erreur inattendue lors de la récupération des groupes:', error.message);
+    return []; // Renvoie un tableau vide en cas d'erreur inattendue
+  }
 }
 
-onMounted(() => {
-  getProjects();
+async function redirectToGroup(projectId) {
+  try {
+    // Récupère les groupes de l'utilisateur connecté
+    const groups = await getGroups();
+
+    // Trouve le groupe associé au projet donné
+    const userGroup = groups.find(group => group.project_id === projectId);
+    console.log('userGroup:', userGroup);
+    if (userGroup) {
+      // Redirige vers la page du groupe correspondant
+      const group_id = userGroup.group_id;
+      console.log('Redirection vers le groupe:', group_id);
+      router.push({ name: 'SingleGroup', params: { id: group_id } }); // Assurez-vous que la route est correctement configurée
+    } else {
+      console.warn('Aucun groupe trouvé pour ce projet.');
+      alert('Vous n\'avez pas de groupe associé à ce projet.');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la redirection vers le groupe :', error.message);
+    alert('Une erreur s\'est produite lors de la redirection.');
+  }
+}
+
+async function fetchUserId() {
+  try {
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error) {
+      console.error('Erreur lors de la récupération de l\'ID utilisateur:', error.message);
+      return null;
+    }
+
+    userId.value = data?.session?.user?.id || null;
+    if (!userId.value) {
+      console.warn('Utilisateur non authentifié.');
+    }
+  } catch (error) {
+    console.error('Erreur inattendue lors de la récupération de l\'ID utilisateur:', error.message);
+  }
+}
+
+onMounted(async () => {
+  try {
+    await fetchUserId();
+    if (userId.value) {
+      await getProjects();
+    }
+  } catch (error) {
+    console.error('Erreur lors de l\'initialisation:', error.message);
+  }
 });
+
 </script>
 
 <template>
@@ -34,7 +100,7 @@ onMounted(() => {
       <div class="mt-6">
         <router-link
           class="flex items-center px-6 py-2 mt-4 duration-200 border-l-4"
-          :class="[$route.name === 'Code' ? activeClass : inactiveClass]"
+          :class="[$route.name === 'Code' ? 'bg-gray-600 bg-opacity-25 text-gray-100 border-gray-100' : 'border-gray-900 text-gray-500 hover:bg-gray-600 hover:bg-opacity-25 hover:text-gray-100']"
           to="/code"
         >
           <button
@@ -88,7 +154,7 @@ onMounted(() => {
               >
                 <td
                   class="px-10 py-4 text-lg text-gray-700 border-b cursor-pointer"
-                  @click="redirectToGroup(Int8Array(1))"
+                  @click="redirectToGroup(project.id)"
                 >
                   {{ project.title }}
                 </td>
@@ -101,6 +167,9 @@ onMounted(() => {
         </div>
       </div>
     </div>
+  </div>
+
+</template>
 
 
 
@@ -356,5 +425,4 @@ onMounted(() => {
       </div>
     </div>
     -->
-  </div>
-</template>
+
