@@ -88,7 +88,7 @@ const routes= [
     component: Blank,
   },
   {
-    path: '/studentform',
+    path: '/studentform/:projectId',
     name: 'StudentForm',
     component: StudentForm,
   },

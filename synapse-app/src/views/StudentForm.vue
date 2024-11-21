@@ -1,79 +1,129 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { supabase } from '../lib/supabaseClient';
 
-// Reactive state for toggling the button's background and text color
-const isBlack = ref(false);
+const route = useRoute();
+const userId = ref(null); 
+const projectId = route.params.projectId;
 
-// Function to toggle the button state
-const toggleColor = () => {
-  isBlack.value = !isBlack.value;
-};
+const maxNumber = ref<number | null>(null);
+const projectTitle = ref('');
+const skillList = ref<string[]>([]); // Array for skills
+const skills = ref([]); 
+const working_mode = ref("");
+const free_spots = ref(-1)
 
-interface FAQ {
-  id: number
-  header: string
-  text: string
-}
-
-const faq: FAQ = {
-  id: 1,
-  header: "How to get the code?",
-  text: "To join the project, ask your teacher for the code."
-}
-
-const activeFaq = ref<number | null>(null);
-
-const handleToggle = () => {
-  activeFaq.value = activeFaq.value === faq.id ? null : faq.id;
-};
-
-const handleQuestionClick = (event: MouseEvent) => {
-  event.preventDefault(); // Prevent any default action if needed
-};
-
+// Reactive state for the selected value
 const defaultSelectValue = ref('');
-const selectedCountry = ref('');
+const preferredWorkingMode = ref(''); // State for the new dropdown
 
-const items = ref([
-  { label: 'Design', showIcon: true },
-  { label: 'Design', showIcon: true },
-  { label: 'Design', showIcon: true }
-]);
+// Reactive state for toggling button colors
+const skillButtonStates = ref<Record<string, boolean>>({}); // State to track black/white state for each button
 
-const options = ref([
-  { label: 'Option 1', value: 'option1' },
-  { label: 'Option 2', value: 'option2' }
-]);
+// Generate options from 0 to maxNumber
+const numberOptions = computed(() => {
+  if (maxNumber.value !== null) {
+    return Array.from({ length: maxNumber.value + 1 }, (_, i) => i); // Create an array [0, 1, 2, ..., maxNumber]
+  }
+  return [];
+});
+
+// Options for preferred working mode
+const workingModes = ['remotely', 'hybrid', 'in-person'];
+
+// Toggle function for button color
+const toggleSkillButtonColor = (skill: string) => {
+  skillButtonStates.value[skill] = !skillButtonStates.value[skill];
+};
+
+onMounted(async () => {
+  const { data } = await supabase.auth.getSession();
+  userId.value = data.session?.user?.id || null;
+  console.log(userId.value)
+});
+
+async function updateStudentSkills() {
+
+  try {
+    const { data, error } = await supabase
+      .from('users_projects')
+      .update({
+        free_spots: number,
+        working_mode: working_mode,
+        skill_list: skillList.value,
+        })
+        .eq('users_projects.user_id', userId)
+        .eq('users_projects.project_id', projectId)
+  } catch (error) {
+    console.error('Erreur lors de la création du projet:', error.message);
+  }
+}
+
+
+// Fetch project data when the component is mounted
+onMounted(async () => {
+  if (projectId) {
+    try {
+      const { data, error } = await supabase
+        .from('projects') // Replace 'projects' with your actual table name
+        .select('*') // Adjust the column names if needed
+        .eq('id', projectId)
+        .single(); // Fetch a single record
+
+      if (error) {
+        console.error('Error fetching project:', error);
+        return;
+      }
+
+      if (data) {
+        projectTitle.value = data.title; // Set the project title
+        maxNumber.value = data.max_students; // Set the max number
+        skillList.value = data.skill_list || []; // Set the skill list
+
+        // Initialize the skill button states
+        skillList.value.forEach((skill) => {
+          skillButtonStates.value[skill] = false; // Set all to false (white background) initially
+        });
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+    }
+  }
+});
 </script>
 
 <template>
-  <!-- ====== Forms Section Start -->
   <section class="bg-gray-1 dark:bg-dark py-30 lg:py-20">
-    <div class="container mx-auto mt-[10px]"> <!-- Added negative margin to move window up -->
+    <div class="container mx-auto mt-[10px]">
+      <!-- Display the project title -->
+      <div class="text-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white">
+          {{ projectTitle || 'Loading...' }}
+        </h1>
+        <p v-if="maxNumber !== null" class="text-gray-600 dark:text-gray-400">
+          Max number: {{ maxNumber }}
+        </p>
+      </div>
+
       <div class="flex flex-wrap -mx-7">
         <div class="w-full px-4">
-          <div
-            class="relative mx-auto max-w-[550px] overflow-hidden rounded-lg bg-white py-10 px-10 text-center sm:px-12 md:px-[60px] dark:bg-dark-2"
-          >
+          <div class="relative mx-auto max-w-[550px] overflow-hidden rounded-lg bg-white py-10 px-10 text-center sm:px-12 md:px-[60px] dark:bg-dark-2">
             <form>
-              <!-- Synapse Section -->
-              <div class="flex items-center justify-center mb-6">
-                <img src="../assets/logo_indigo.png" class="w-16 h-16">
-                <span class="ml-4 text-2xl font-semibold text-gray-700">Synapse</span>
-              </div>
-
+              <!-- Group Size Selection -->
               <div class="mb-12 flex items-center justify-between">
-                <label for="" class="mr-4 text-base font-medium text-dark dark:text-white">
+                <label for="group-select" class="mr-4 text-base font-medium text-dark dark:text-white">
                   I am looking for a group with
                 </label>
                 <div class="relative z-20 flex-1 ml-[-30px] group">
                   <select
+                    id="group-select"
                     v-model="defaultSelectValue"
                     class="relative z-20 w-1/3 appearance-none rounded-lg border border-stroke dark:border-dark-3 bg-transparent py-[6px] px-3 text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2"
                   >
-                    <option value="" class="dark:bg-dark-2">0</option>
-                    <option value="" class="dark:bg-dark-2">1</option>
-                    <option value="" class="dark:bg-dark-2">2</option>
+                    <option v-for="number in numberOptions" :key="number" :value="number">
+                      {{ number }}
+                    </option>
                   </select>
                   <span class="ml-2 text-base font-medium text-dark dark:text-white">free spots</span>
                   
@@ -85,26 +135,52 @@ const options = ref([
                   </div>
                 </div>
               </div>
-              <button
-    @click="toggleColor"
-    :class="[
-      'mt-4 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium shadow-sm',
-      isBlack ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300'
-    ]"
-    type="button"
-  >
-    {{ isBlack ? 'Black Button' : 'White Button' }}
-  </button>
 
-              <!-- Buttons Section -->
+              <!-- Working Mode Selection -->
+              <div class="mb-12 flex items-center justify-between">
+                <label for="working-mode" class="mr-4 text-base font-medium text-dark dark:text-white">
+                  I prefer working
+                </label>
+                <div class="relative z-20 flex-1 ml-[-30px]">
+                  <select
+                    id="working-mode"
+                    v-model="preferredWorkingMode"
+                    class="relative z-20 w-1/3 appearance-none rounded-lg border border-stroke dark:border-dark-3 bg-transparent py-[6px] px-3 text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2"
+                  >
+                    <option v-for="mode in workingModes" :key="mode" :value="mode">
+                      {{ mode }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Skill Buttons Section -->
+              <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Skills Required:</h2>
+                <div class="flex flex-wrap gap-2 justify-center">
+                  <button
+                    v-for="skill in skillList"
+                    :key="skill"
+                    @click="toggleSkillButtonColor(skill)"
+                    :class="[
+                      'py-2 px-4 border rounded-full transition duration-300',
+                      skillButtonStates[skill] ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300'
+                    ]"
+                    type="button"
+                  >
+                    {{ skill }}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
               <div class="flex justify-center mt-6">
-                <!-- Submit Button -->
-                <a
-                  href="javascript:void(0)"
+                <button
                   class="bg-indigo-800 border-indigo-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500"
+                  type="submit" @click="updateStudentSkills(Number)"
                 >
                   Search!
-                </a>
+                </button>
               </div>
             </form>
           </div>
@@ -113,7 +189,6 @@ const options = ref([
     </div>
   </section>
 </template>
-
 
 <!--
 <script setup lang="ts">

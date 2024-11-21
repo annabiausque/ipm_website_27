@@ -7,14 +7,29 @@ import { ref, onMounted } from 'vue'
 import { supabase } from '../lib/supabaseClient'
 
 const projects = ref([])
+let user = ref('')
+
+async function getUserProjects(user_id) {
+  const { data } = await supabase
+  .from('projects')
+  .select(`
+  title,
+  end_date,
+  users_projects!inner(user_id)  
+  `)
+  .eq('users_projects.user_id', user_id)  
+  projects.value = data
+}
 
 async function getProjects() {
   const { data } = await supabase.from('projects').select()
   projects.value = data
 }
 
-onMounted(() => {
-  getProjects()
+onMounted(async () => {
+  const user_db = await supabase.auth.getUser()
+  console.log(user_db.data.user.user_metadata.sub);
+  getUserProjects(user_db.data.user.user_metadata.sub)
 })
 const {
   simpleTableData,

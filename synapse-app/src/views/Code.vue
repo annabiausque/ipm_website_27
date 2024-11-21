@@ -55,7 +55,7 @@ const signUserToProject = async () => {
 
   console.log("User signed to project");
   //redirect user to /groups tab
-  router.push({ name: 'Groups', params: { projectId: project_id } });
+  router.push({ name: 'StudentForm', params: { projectId: project_id } });
 }
 </script>
 
