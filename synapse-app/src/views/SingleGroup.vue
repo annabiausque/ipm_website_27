@@ -49,9 +49,9 @@ export default {
 <template>
   <div class="bg-gray-50 py-24 sm:py-32">
     <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-      <h2 class="text-center text-base/7 font-semibold text-indigo-600"></h2>
+      <h2 class="text-center text-base/7 font-semibold text-indigo-600">Détails du Groupe</h2>
       <p class="mx-auto mt-2 max-w-lg text-balance text-center text-4xl font-semibold tracking-tight text-gray-950 sm:text-5xl">
-        {{ groupData.name }}
+        Informations
       </p>
       <div class="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2">
         <div class="relative lg:row-span-2">
@@ -60,16 +60,16 @@ export default {
             class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-l-[calc(2rem+1px)]"
           >
             <div v-if="loading" class="text-center py-12">
-              <p class="text-gray-500 text-lg">Loading...</p>
+              <p class="text-gray-500 text-lg">Chargement en cours...</p>
             </div>
             <div v-else-if="groupData" class="p-8">
-              <h3 class="text-lg font-medium text-gray-800">Group members</h3>
-              <p class="mt-2 text-gray-600"></p>
-              <h3 class="mt-4 text-lg font-medium text-gray-800">List of skills</h3>
-              <p class="mt-2 text-gray-600">{{ (groupData.skills_list || []).join(", ") }}</p>
+              <h3 class="text-lg font-medium text-gray-800">Nom du groupe :</h3>
+              <p class="mt-2 text-gray-600">{{ groupData.name }}</p>
+              <h3 class="mt-4 text-lg font-medium text-gray-800">Description :</h3>
+              <p class="mt-2 text-gray-600">{{ groupData.description }}</p>
             </div>
             <div v-else class="text-center py-12">
-              <p class="text-gray-500 text-lg">No group found.</p>
+              <p class="text-gray-500 text-lg">Aucun groupe trouvé.</p>
             </div>
           </div>
           <div
@@ -83,7 +83,7 @@ export default {
           >
             <div class="px-8 pt-8 sm:px-10 sm:pt-10">
               <p class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
-                Progression
+                Performance
               </p>
             </div>
             <div
@@ -136,7 +136,7 @@ export default {
           >
             <div class="px-8 pb-3 pt-8 sm:px-10 sm:pb-0 sm:pt-10">
               <p class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
-                Ressources
+                Powerful APIs
               </p>
               <p class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
                 Sit quis amet rutrum tellus ullamcorper ultricies libero dolor eget sem
@@ -152,6 +152,11 @@ export default {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Ajoutez des styles spécifiques ici si nécessaire */
+</style>
+
 
 <style scoped>
 /* Ajoutez des styles spécifiques ici si nécessaire */
