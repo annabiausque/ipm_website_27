@@ -50,9 +50,15 @@ export default {
   <div class="bg-gray-50 py-24 sm:py-32">
     <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
       <h2 class="text-center text-base/7 font-semibold text-indigo-600">Project name</h2>
-      <p class="mx-auto mt-2 max-w-lg text-balance text-center text-4xl font-semibold tracking-tight text-gray-950 sm:text-5xl">
+      <div v-if="loading" class="text-center py-12">
+              <p class="text-gray-500 text-lg">Loading...</p>
+            </div>
+            <div v-else-if="groupData" class="p-8">
+              <p class="mx-auto mt-2 max-w-lg text-balance text-center text-4xl font-semibold tracking-tight text-gray-950 sm:text-5xl">
      {{ groupData.name }}
       </p>
+            </div>
+     
       <div class="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2">
         <div class="relative lg:row-span-2">
           <div class="absolute inset-px rounded-lg bg-white lg:rounded-l-[2rem]"></div>
