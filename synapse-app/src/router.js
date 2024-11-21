@@ -17,6 +17,7 @@ import Code from './views/Code.vue'
 import Groups from './views/Groups.vue'
 import Match from './views/Match.vue'
 import SingleGroup from './views/SingleGroup.vue'
+import Profile from './views/Profile.vue';
 
 
 const routes= [
