@@ -17,14 +17,17 @@ const logout = async () => {
     console.error(error.message);
   }
 }
-
+let userId = ref('')
 onMounted(async () => {
+  const { data: user_db, error } = await supabase.auth.getUser()
+  if (error) {
+    console.error('Error fetching user:', error)
+    return
+  }
 
-  const user_db = await supabase.auth.getUser()
-
-  user.value = user_db.data.user.user_metadata;
-  console.log('user', user.value);
-});
+  userId.value = user_db.user.id
+  console.log('User ID:', userId.value)
+})
 
 const profile = () => {
   console.log('Profile')
