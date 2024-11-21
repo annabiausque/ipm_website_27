@@ -5,19 +5,19 @@ import { supabase } from '../lib/supabaseClient';
 
 const router = useRouter();
 const projects = ref([]);
-const userId = ref(''); // Declare userId properly
+const userId = ref('');
 
-// Function to fetch user-specific projects
-async function getUserProjects(user_id) {
+async function getUserProjects() {
   try {
     const { data, error } = await supabase
       .from('projects')
       .select(`
+        id,
         title,
         end_date,
         users_projects!inner(user_id)
       `)
-      .eq('users_projects.user_id', user_id);
+      .eq('users_projects.user_id', userId.value);
 
     if (error) {
       console.error('Error fetching user projects:', error.message);
@@ -30,22 +30,6 @@ async function getUserProjects(user_id) {
   }
 }
 
-// Function to fetch all projects
-async function getProjects() {
-  try {
-    const { data, error } = await supabase.from('projects').select();
-
-    if (error) {
-      console.error('Error fetching projects:', error.message);
-      return;
-    }
-
-    projects.value = data || [];
-  } catch (err) {
-    console.error('Unexpected error fetching projects:', err.message);
-  }
-}
-
 async function getGroups() {
   try {
     const { data, error } = await supabase
@@ -54,18 +38,17 @@ async function getGroups() {
       .eq('user_id', userId.value);
 
     if (error) {
-      console.error('An error happened while fetching the data for the groups', error.message);
-      return []; 
+      console.error('Error fetching groups:', error.message);
+      return [];
     }
 
-    return data || []; 
+    return data || [];
   } catch (error) {
-    console.error('An error happened while fetching thz groups', error.message);
-    return []; 
+    console.error('Unexpected error fetching groups:', error.message);
+    return [];
   }
 }
 
-// Function to fetch the user ID
 async function fetchUserId() {
   try {
     const { data, error } = await supabase.auth.getSession();
@@ -85,21 +68,16 @@ async function fetchUserId() {
   }
 }
 
-// Function to redirect to a group based on project ID
 async function redirectToGroup(projectId) {
   try {
-    const groups = await getGroups(); // Ensure getGroups function is defined elsewhere
+    const groups = await getGroups();
 
     const userGroup = groups.find(group => group.project_id === projectId);
 
     if (userGroup) {
-      const group_id = userGroup.group_id;
-      console.log('Redirecting to the group:', group_id);
-      router.push({ name: 'SingleGroup', params: { id: group_id } });
+      router.push({ name: 'SingleGroup', params: { id: userGroup.group_id } });
     } else {
-      console.warn('No group associated with this project.');
-      alert('No group associated with this project.');
-      router.push({ name: 'Groups' });
+      router.push({ name: 'Groups', params: { projectId } });
     }
   } catch (err) {
     console.error('Error during redirection:', err.message);
@@ -107,18 +85,14 @@ async function redirectToGroup(projectId) {
   }
 }
 
-// Initialize on component mount
 onMounted(async () => {
-  try {
-    await fetchUserId();
-    if (userId.value) {
-      await getUserProjects(userId.value);
-    }
-  } catch (err) {
-    console.error('Error during initialization:', err.message);
+  await fetchUserId();
+  if (userId.value) {
+    await getUserProjects();
   }
 });
 </script>
+
 
 <template>
   <div>
