@@ -69,12 +69,19 @@ async function createProject() {
         .insert(groups);
       if (groupError) {
         console.error('Erreur lors de la création des groupes:', groupError.message);
+        snackbar.add({
+          type: 'error',
+          text: 'An error occurred while creating the groups for the project.',
+        });
         return;
       }
 
-      localStorage.setItem('notification', 'Your new project was successfully created!');
-
-      router.push('/dashboard');
+      //localStorage.setItem('notification', 'Your new project was successfully created!');
+      snackbar.add({
+        type: 'success',
+        text: 'Your new project was successfully created!',
+      });
+      router.push('/my-projects');
     }
   } catch (projectError) {
     console.error('Erreur lors de la création du projet:', projectError.message);

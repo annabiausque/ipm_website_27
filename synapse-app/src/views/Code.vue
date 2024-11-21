@@ -2,7 +2,8 @@
 import { ref } from 'vue'
 import { supabase } from '../lib/supabaseClient';
 import { useRouter } from 'vue-router';
-
+import { useSnackbar } from "vue3-snackbar";
+const snackbar = useSnackbar();
 const router = useRouter();
 interface FAQ {
   id: number
@@ -42,6 +43,10 @@ const signUserToProject = async () => {
     console.log(project_id);
   } else {
     console.error('No project found with the provided code.');
+    snackbar.add({
+      type: 'error',
+      text: 'No project found with the provided code.',
+    });
   }
   const { data: userData, error: userError } = await supabase.auth.getUser();
   if (userError) {
@@ -54,8 +59,13 @@ const signUserToProject = async () => {
     .insert({ project_id: project_id, user_id: userData?.user?.id })
 
   console.log("User signed to project");
+
   //redirect user to /groups tab
   router.push({ name: 'StudentForm', params: { projectId: project_id } });
+  snackbar.add({
+    type: 'success',
+    text: 'You have successfully joined the project.',
+  });
 }
 </script>
 

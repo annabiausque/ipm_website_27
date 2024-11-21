@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import VueTailwindDatepicker from 'vue-tailwind-datepicker';
 import { supabase } from './lib/supabaseClient';
+import { Vue3Snackbar } from "vue3-snackbar";
 
 const defaultLayout = 'default';
 const router = useRouter();
@@ -26,6 +27,8 @@ const layout = computed(() => {
   <component :is="layout">
 
     <router-view />
+    <vue3-snackbar bottom groups :duration="4000"></vue3-snackbar>
+
   </component>
 </template>
 

@@ -9,7 +9,8 @@ import Vue3TouchEvents, {
     type Vue3TouchEventsOptions,
   } from "vue3-touch-events";
 
-
+import { SnackbarService } from "vue3-snackbar";
+import "vue3-snackbar/styles";
 
 import DashboardLayout from './components/DashboardLayout.vue'
 import EmptyLayout from './components/EmptyLayout.vue'
@@ -26,7 +27,11 @@ app.use<Vue3TouchEventsOptions>(Vue3TouchEvents, {
 app.use(router)
 
 app.use(vueDoubleSlider)
+app.use(SnackbarService);
+
 app.mount('#app')
+
+
 
 
 
