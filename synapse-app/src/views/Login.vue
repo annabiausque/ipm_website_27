@@ -2,13 +2,15 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { supabase } from '../lib/supabaseClient';
+import { useSnackbar } from "vue3-snackbar";
+const snackbar = useSnackbar();
 
 const router = useRouter();
 
 const loading = ref(false);
 const email = ref('');
 const password = ref('');
-const snackbar = ref(false);
+
 const login = async () => {
   console.log('login');
   loading.value = true;
@@ -19,9 +21,16 @@ const login = async () => {
   console.log('data', data)
   loading.value = false;
   if (!error) {
+    // snackbar.add({
+    //   type: 'success',
+    //   text: 'Login successful',
+    // });
     router.push('welcome');
   } else {
-    snackbar.value = true;
+    snackbar.add({
+      type: 'error',
+      text: 'Bad username or password',
+    });
     console.error(error.message);
   }
 };

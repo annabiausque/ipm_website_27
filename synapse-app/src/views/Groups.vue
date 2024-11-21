@@ -2,11 +2,12 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { supabase } from '../lib/supabaseClient';
-
+import { useSnackbar } from "vue3-snackbar";
+const snackbar = useSnackbar();
 const route = useRoute();
 const projectId = route.params.projectId;
-
-const email = ref('');
+const groupToLeave = ref('');
+const open = ref(false);
 const loading = ref(true);
 const groups = ref([]);
 const userId = ref('');
@@ -58,8 +59,17 @@ async function addMember(groupId) {
         });
     if (error) {
         console.error('Error inserting user to group:', error);
+        snackbar.add({
+            type: 'info',
+            text: 'You are already member of a group',
+        })
+
     } else {
         console.log('User successfully added to group');
+        // snackbar.add({
+        //     type: 'success',
+        //     text: 'You successfully joined the group',
+        // });
         // Refresh the groups state
         await fetchGroups();
     }
@@ -68,6 +78,7 @@ async function addMember(groupId) {
 async function leaveGroup(groupId) {
     console.log('Deleting user from group:', groupId);
     // Insert user to grou
+    // show confirmation modal
 
     const { error } = await supabase
         .from('users_groups')
@@ -120,7 +131,7 @@ async function leaveGroup(groupId) {
                                 <img :src="`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${member.user_id}&radius=50&randomizeIds=true`"
                                     alt="Member Avatar"
                                     class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2">
-                                <button v-if="member.user_id == userId" @click="leaveGroup(group.id)"
+                                <button v-if="member.user_id == userId" @click="open = true; groupToLeave = group.id"
                                     class="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                     Leave
                                 </button>
@@ -158,6 +169,57 @@ async function leaveGroup(groupId) {
         </div>
 
 
+    </div>
+
+    <div :class="`modal ${!open && 'opacity-0 pointer-events-none'
+        } z-50 fixed w-full h-full top-0 left-0 flex items-center justify-center`">
+        <div class="absolute w-full h-full bg-gray-900 opacity-50 modal-overlay" @click="open = false" />
+
+        <div class="z-50 w-11/12 mx-auto overflow-y-auto bg-white rounded shadow-lg modal-container md:max-w-md">
+            <div
+                class="absolute top-0 right-0 z-50 flex flex-col items-center mt-4 mr-4 text-sm text-white cursor-pointer modal-close">
+                <svg class="text-white fill-current" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                    viewBox="0 0 18 18">
+                    <path
+                        d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z" />
+                </svg>
+                <span class="text-sm">(Esc)</span>
+            </div>
+
+            <!-- Add margin if you want to see some of the overlay behind the modal -->
+            <div class="px-6 py-4 text-left modal-content">
+                <!-- Title -->
+                <div class="flex items-center justify-between pb-3">
+                    <p class="text-2xl font-bold">
+                        You are about to leave a group
+                    </p>
+                    <div class="z-50 cursor-pointer modal-close" @click="open = false">
+                        <svg class="text-black fill-current" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                            viewBox="0 0 18 18">
+                            <path
+                                d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <p>Are you sure you want to leave your group?</p>
+
+                <!-- Footer -->
+                <div class="flex justify-end pt-2">
+                    <button
+                        class="p-3 px-6 py-3 mr-2 text-indigo-500 bg-transparent rounded-lg hover:bg-gray-100 hover:text-indigo-400 focus:outline-none"
+                        @click="open = false">
+                        No
+                    </button>
+                    <button
+                        class="px-6 py-3 font-medium tracking-wide text-white bg-red-600 rounded-md hover:bg-red-500 focus:outline-none"
+                        @click="open = false; leaveGroup(groupToLeave)">
+                        Yes
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
     <div v-if="groups.length <= 0 && !loading" class="text-center">
         Sorry no groups found for this project
