@@ -125,9 +125,11 @@ onMounted(async () => {
             <div class="grid">
                 <div class="custom-div-2 bg-white shadow rounded-lg p-6 flex flex-col items-center">
                     <div class="flex flex-col items-center">
-                            <img src="https://images.unsplash.com/photo-1528892952291-009c663ce843?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=296&q=80" class="w-32 h-32 bg-gray-300 rounded-full shrink-0 object-cover">
+                        <!--
+                        <img src="https://images.unsplash.com/photo-1528892952291-009c663ce843?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=296&q=80" class="w-32 h-32 bg-gray-300 rounded-full shrink-0 object-cover">
+                        -->
+                        <img :src="`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}&radius=50&randomizeIds=true`" class="w-32 h-32 bg-gray-300 rounded-full shrink-0 object-cover">
 
-                            </img>
                             
                         </div>               
                     <div class="flex flex-col">
