@@ -6,19 +6,18 @@ import { supabase } from '../lib/supabaseClient';
 const router = useRouter();
 const projects = ref([]);
 const userId = ref(null);
-const groups = ref([]);
-
 
 async function getProjects() {
   const { data, error } = await supabase.from('projects').select();
 
   if (error) {
-    console.error('Erreur lors de la récupération des projets:', error.message);
+    console.error('An error happened while fetching the projects', error.message);
     return;
   }
 
   projects.value = data || [];
 }
+
 async function getGroups() {
   try {
     const { data, error } = await supabase
@@ -27,37 +26,36 @@ async function getGroups() {
       .eq('user_id', userId.value);
 
     if (error) {
-      console.error('Erreur lors de la récupération des informations des groupes:', error.message);
-      return []; // Renvoie un tableau vide en cas d'erreur
+      console.error('An error happened while fetching the data for the groups', error.message);
+      return []; 
     }
 
-    return data || []; // Renvoie les données ou un tableau vide si aucune donnée
+    return data || []; 
   } catch (error) {
-    console.error('Erreur inattendue lors de la récupération des groupes:', error.message);
-    return []; // Renvoie un tableau vide en cas d'erreur inattendue
+    console.error('An error happened while fetching thz groups', error.message);
+    return []; 
   }
 }
 
 async function redirectToGroup(projectId) {
   try {
-    // Récupère les groupes de l'utilisateur connecté
     const groups = await getGroups();
 
-    // Trouve le groupe associé au projet donné
     const userGroup = groups.find(group => group.project_id === projectId);
-    console.log('userGroup:', userGroup);
+
     if (userGroup) {
-      // Redirige vers la page du groupe correspondant
       const group_id = userGroup.group_id;
-      console.log('Redirection vers le groupe:', group_id);
-      router.push({ name: 'SingleGroup', params: { id: group_id } }); // Assurez-vous que la route est correctement configurée
+      console.log('Redirection to the group : ', group_id);
+      router.push({ name: 'SingleGroup', params: { id: group_id } });
     } else {
-      console.warn('Aucun groupe trouvé pour ce projet.');
-      alert('Vous n\'avez pas de groupe associé à ce projet.');
+      console.warn('No group associated with this project.');
+      alert('No group associated with this project.');
+  
+      router.push({ name: 'Groups' }); 
     }
   } catch (error) {
-    console.error('Erreur lors de la redirection vers le groupe :', error.message);
-    alert('Une erreur s\'est produite lors de la redirection.');
+    console.error('An error happened during redirection:', error.message);
+    alert('An error happened during redirection.');
   }
 }
 
@@ -66,16 +64,16 @@ async function fetchUserId() {
     const { data, error } = await supabase.auth.getSession();
 
     if (error) {
-      console.error('Erreur lors de la récupération de l\'ID utilisateur:', error.message);
+      console.error('An error happened while fetch the user id', error.message);
       return null;
     }
 
     userId.value = data?.session?.user?.id || null;
     if (!userId.value) {
-      console.warn('Utilisateur non authentifié.');
+      console.warn('User is not authenticated.');
     }
   } catch (error) {
-    console.error('Erreur inattendue lors de la récupération de l\'ID utilisateur:', error.message);
+    console.error('An error happened during the authentification', error.message);
   }
 }
 
@@ -89,8 +87,8 @@ onMounted(async () => {
     console.error('Erreur lors de l\'initialisation:', error.message);
   }
 });
-
 </script>
+
 
 <template>
   <div>
