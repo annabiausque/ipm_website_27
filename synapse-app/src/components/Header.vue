@@ -27,8 +27,12 @@ onMounted(async () => {
 });
 
 const profile = () => {
-  console.log('Profile');
-  router.push('/profile')
+  console.log('Profile')
+  if (userId.value) {
+    router.push(`/profile/${userId.value}`)
+  } else {
+    console.error('User ID is not available')
+  }
 }
 
 </script>
