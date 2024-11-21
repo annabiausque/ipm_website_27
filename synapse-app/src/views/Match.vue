@@ -23,8 +23,9 @@
             </a>
             <a href="#">
               <p class="mb-2 text-l font-semibold tracking-tight text-gray-900 dark:text-white">
-                Skills: {{ card.skills_list.join(', ') }}
+                Skills: {{ (card.skills_list || []).join(', ') }}
               </p>
+
             </a>
             <a href="#">
               <p class="mb-2 text-l font-semibold tracking-tight text-gray-900 dark:text-white">
@@ -62,87 +63,97 @@
 import { Swipeable } from "vue-swipy";
 import { supabase } from "../lib/supabaseClient";
 import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 
 export default {
   name: "Match",
   components: { Swipeable },
-  data() {
-    return {
-      stack: [],
-      noGroupsLeft: false,
-    };
-  },
-  methods: {
-    onSwipe(direction) {
-    const cardElement = document.querySelector(".card");
-    if (cardElement) {
-      cardElement.classList.add(direction === "swipe-left" ? "swipe-left" : "swipe-right");
-    }
+  setup() {
+    const route = useRoute();
+    const stack = ref([]);
+    const noGroupsLeft = ref(false);
 
-    if (direction === "swipe-right") {
-      this.createHeartEffect(); 
-    }
-
-    setTimeout(() => {
-      this.stack.pop();
-      this.noGroupsLeft = this.stack.length === 0;
+    const onSwipe = (direction) => {
+      const cardElement = document.querySelector(".card");
       if (cardElement) {
-        cardElement.classList.remove("swipe-left", "swipe-right");
+        cardElement.classList.add(direction === "swipe-left" ? "swipe-left" : "swipe-right");
       }
-    }, 500);
-  },
-    onClick(direction) {
-      this.onSwipe(direction);
-    },
-    async fetchGroupInfos() {
+
+      if (direction === "swipe-right") {
+        createHeartEffect();
+      }
+
+      setTimeout(() => {
+        stack.value.pop();
+        noGroupsLeft.value = stack.value.length === 0;
+        if (cardElement) {
+          cardElement.classList.remove("swipe-left", "swipe-right");
+        }
+      }, 500);
+    };
+
+    const onClick = (direction) => {
+      onSwipe(direction);
+    };
+
+    const createHeartEffect = () => {
+      const heartCount = 20;
+      for (let i = 0; i < heartCount; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+        heart.innerText = "💗";
+        document.body.appendChild(heart);
+        setTimeout(() => {
+          heart.remove();
+        }, 5000);
+      }
+    };
+
+    const scrollToAnchor = (anchorId) => {
+      const target = document.getElementById(anchorId);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    const fetchGroupInfos = async () => {
       try {
-        const { data, error } = await supabase.from("groups").select("id, name, avatar, skills_list");
+        const { data, error } = await supabase
+          .from("groups")
+          .select("id, name, avatar, skills_list")
+          .eq("project_id", route.params.projectId)
+          .order("id", { ascending: false });
+
         if (error) {
           console.error("Erreur lors de la récupération des informations du groupe:", error.message);
           return;
         }
-        this.stack = data || [];
-        this.noGroupsLeft = this.stack.length === 0;
+
+        stack.value = data || [];
+        noGroupsLeft.value = stack.value.length === 0;
       } catch (error) {
         console.error("Erreur inattendue lors de la récupération des informations du groupe:", error.message);
       }
-    },
-    createHeartEffect() {
-    const heartCount = 20; // Nombre de cœurs à générer
-    for (let i = 0; i < heartCount; i++) {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
+    };
 
-      heart.style.left = Math.random() * 100 + "vw"; // Position aléatoire sur l'axe X
-      heart.style.animationDuration = Math.random() * 2 + 3 + "s"; // Durée aléatoire de l'animation
-
-      heart.innerText = "💗";
-
-      document.body.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 5000); // Supprime le cœur après son animation
-    }
-  },
-    scrollToAnchor(anchorId) {
-      const target = document.getElementById(anchorId);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
-      } else {
-        console.warn(`Anchor with ID '${anchorId}' not found.`);
-      }
-    },
-  },
-  mounted() {
-    supabase.auth.getSession().then(({ data }) => {
-      const userId = data.session?.user?.id || null;
-      this.userId = userId;
-      this.fetchGroupInfos();
+    onMounted(() => {
+      fetchGroupInfos();
     });
+
+    return {
+      stack,
+      noGroupsLeft,
+      onSwipe,
+      onClick,
+      scrollToAnchor,
+      createHeartEffect,
+    };
   },
 };
 </script>
+
 
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css";

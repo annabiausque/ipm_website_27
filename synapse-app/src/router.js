@@ -92,7 +92,7 @@ const routes= [
     component: SupabaseTest,
   },
   {
-    path: '/match',
+    path: '/match/:projectId',
     name: 'Match',
     component: Match,
   },

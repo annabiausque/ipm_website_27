@@ -84,6 +84,7 @@ async function leaveGroup(groupId) {
 }
 </script>
 <template>
+    
     <div>
         <span class="ml-4 text-4xl font-normal text-gray-700">Choose your group</span>
     </div>
