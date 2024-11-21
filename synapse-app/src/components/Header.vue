@@ -88,7 +88,6 @@ const profile = () => {
 
             <div @click="profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">
               Profile</div>
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Products</a>
             <div @click="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">
               Log out
             </div>
