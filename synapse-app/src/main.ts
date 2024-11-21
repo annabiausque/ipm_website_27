@@ -13,18 +13,19 @@ import Vue3TouchEvents, {
 
 import DashboardLayout from './components/DashboardLayout.vue'
 import EmptyLayout from './components/EmptyLayout.vue'
+// Vuetify
+import * as components from 'vuetify/components'
 
 const app = createApp(App)
 app.component('DefaultLayout', DashboardLayout)
-app.component('EmptyLayout', EmptyLayout)
+app.component("vue-tailwind-datepicker",VueTailwindDatepicker)
+
 app.use<Vue3TouchEventsOptions>(Vue3TouchEvents, {
     disableClick: false
   })
 app.use(router)
 
 app.use(vueDoubleSlider)
-app.component("vue-tailwind-datepicker",VueTailwindDatepicker)
-
 app.mount('#app')
 
 
