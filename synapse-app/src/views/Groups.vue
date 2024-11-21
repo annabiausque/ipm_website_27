@@ -7,7 +7,7 @@ const route = useRoute();
 const projectId = route.params.projectId;
 
 const email = ref('');
-const loading = ref(false);
+const loading = ref(true);
 const groups = ref([]);
 const userId = ref('');
 const project = ref('');
@@ -39,6 +39,7 @@ const fetchGroups = async () => {
     } else {
         console.error('No project found with the provided code.');
     }
+    loading.value = false;
 };
 
 onMounted(fetchGroups);
@@ -84,7 +85,7 @@ async function leaveGroup(groupId) {
 }
 </script>
 <template>
-    
+
     <div>
         <span class="ml-4 text-4xl font-normal text-gray-700">Choose your group</span>
     </div>
@@ -95,7 +96,7 @@ async function leaveGroup(groupId) {
         </span>
     </div>
 
-    <div class="items-center justify-items-center justify-center">
+    <div class="items-center justify-items-center justify-center" v-if="groups.length > 0">
         <router-link to="/match">
             <button
                 class="justify-self-center mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm">
@@ -109,7 +110,7 @@ async function leaveGroup(groupId) {
                 Find me a group
             </button>
         </router-link>
-        <div v-for="group in groups" class="hover:bg-gray-50 mt-10 bg-white shadow-md overflow-hidden rounded-3xl">
+        <div v-for="group in groups" class=" hover:bg-gray-50 mt-10 bg-white shadow-md overflow-hidden rounded-3xl">
             <div class="p-8">
                 <div class="uppercase tracking-wide text-l text-indigo-500 font-semibold">Group: {{ group.name }}</div>
                 <div class="flex mt-4 space-x-5 justify-center">
@@ -140,7 +141,7 @@ async function leaveGroup(groupId) {
                     </div>
                 </div>
                 <div v-if="group?.members?.some(member => member.user_id === userId)" class="text-right">
-                    <router-link to="/supabase">
+                    <router-link :to="`/singlegroup/${group.id}`">
                         <button
                             class="mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-violet-500 hover:border-transparent disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm transition-transform duration-300 transform hover:scale-105">
                             <span class="pr-[10px]">
@@ -158,5 +159,7 @@ async function leaveGroup(groupId) {
 
 
     </div>
-
+    <div v-if="groups.length <= 0 && !loading" class="text-center">
+        Sorry no groups found for this project
+    </div>
 </template>
