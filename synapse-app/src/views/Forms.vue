@@ -35,7 +35,7 @@ async function createProject() {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data: projectData, projectError } = await supabase
       .from('projects')
       .insert([
         {
@@ -50,17 +50,34 @@ async function createProject() {
           number_of_groups: numberOfGroups.value,
           skill_list: skills.value,
         }
-      ]);
+      ]).select();
 
-    if (error) {
-      console.error('Erreur lors de la création du projet:', error.message);
+    if (projectError) {
+      console.error('Erreur lors de la création du projet:', projectError.message);
     } else {
-      console.log('Projet créé avec succès:', data);
+
+      console.log('Projet créé avec succès:', projectData);
+      let groups = [];
+      for (let i = 0; i < numberOfGroups.value; i++) {
+        groups.push({
+          project_id: projectData[0].id,
+          name: `${title.value} group ${i + 1}`,
+        });
+      }
+      const { data: groupData, error: groupError } = await supabase
+        .from('groups')
+        .insert(groups);
+      if (groupError) {
+        console.error('Erreur lors de la création des groupes:', groupError.message);
+        return;
+      }
+
       localStorage.setItem('notification', 'Your new project was successfully created!');
+
       router.push('/dashboard');
     }
-  } catch (error) {
-    console.error('Erreur lors de la création du projet:', error.message);
+  } catch (projectError) {
+    console.error('Erreur lors de la création du projet:', projectError.message);
   }
 }
 
