@@ -6,7 +6,31 @@ import { supabase } from '../lib/supabaseClient';
 const router = useRouter();
 const projects = ref([]);
 const userId = ref('');
-const notification = ref('');
+const user = ref('');
+
+async function getTeacherProjects() {
+  try {
+    const { data, error } = await supabase
+      .from('projects')
+      .select(`
+        id,
+        title,
+        subject,
+        short_code,
+        end_date
+      `)
+      .eq('id_owner', userId.value)
+
+    if (error) {
+      console.error('Error fetching user projects:', error.message);
+      return;
+    }
+
+    projects.value = data || [];
+  } catch (err) {
+    console.error('Unexpected error fetching user projects:', err.message);
+  }
+}
 
 async function getUserProjects() {
   try {
@@ -15,6 +39,7 @@ async function getUserProjects() {
       .select(`
         id,
         title,
+        subject,
         end_date,
         users_projects!inner(user_id)
       `)
@@ -52,9 +77,23 @@ async function getGroups() {
 
 async function fetchUserId() {
   try {
-    const { data, error } = await supabase.auth.getSession();
 
+    const { data: user_db, error } = await supabase.auth.getUser()
     if (error) {
+      console.error('Error fetching user:', error)
+      return
+    }
+
+    user.value = user_db.user.user_metadata
+    userId.value = user_db.user.id
+
+    
+  console.log('user is teacherLOGIC: ', user);
+  console.log('user', user.value);
+//-----------------------------
+    //const { data, error } = await supabase.auth.getSession();
+
+    /*if (error) {
       console.error('Error fetching user session:', error.message);
       return;
     }
@@ -63,9 +102,9 @@ async function fetchUserId() {
 
     if (!userId.value) {
       console.warn('User is not authenticated.');
-    }
-  } catch (err) {
-    console.error('Unexpected error during authentication:', err.message);
+    }*/
+  } catch (error) {
+    console.error('Error in fetchUserId:', error)
   }
 }
 
@@ -89,15 +128,13 @@ async function redirectToGroup(projectId) {
 onMounted(async () => {
   await fetchUserId();
   if (userId.value) {
-    await getUserProjects();
-  }
-
-  notification.value = localStorage.getItem('notification');
-  if (notification.value) {
-    setTimeout(() => {
-      notification.value = null;
-      localStorage.removeItem('notification');
-    }, 5000);
+    if (user.value.isTeacher) {
+      console.log('getTeacherProjects');
+      await getTeacherProjects();
+    } else {      
+      console.log('getStudentProjects');
+      await getUserProjects();
+    }
   }
 });
 </script>
@@ -109,6 +146,7 @@ onMounted(async () => {
 
     <div class="mt-4">
       <div class="mt-6">
+        <div v-if="!user.isTeacher">
         <router-link class="flex items-center px-6 py-2 mt-4 duration-200 border-l-4"
           :class="[$route.name === 'Code' ? activeClass : inactiveClass]" to="/code">
 
@@ -134,28 +172,40 @@ onMounted(async () => {
             Join a new project
           </button>
         </router-link>
-        <div v-if="notification" class="notification-banner bg-green-500 text-white p-4 rounded mb-4">
-          {{ notification }}
-        </div>
+      </div>
+
         <div class="my-6 overflow-hidden bg-white rounded-md shadow">
           <table class="w-full text-left border-collapse">
             <thead class="border-b">
               <tr>
-                <th class="px-10 py-3 text-sm font-medium text-gray-100 uppercase bg-indigo-800">
+                <th class="px-7 py-3 text-sm font-medium text-gray-100 uppercase bg-indigo-800">
+                  Subject
+                </th>
+                <th class="px-7 py-3 text-sm font-medium text-gray-100 uppercase bg-indigo-800">
                   Name
                 </th>
-                <th class="px-20 py-3 text-sm font-medium text-gray-100 uppercase bg-indigo-800 text-right">
+                <th v-if="user.isTeacher" class="px-7 py-3 text-sm font-medium text-gray-100 uppercase bg-indigo-800">
+                  Code
+                </th>
+                <th class="px-4 py-3 text-sm font-medium text-gray-100 uppercase bg-indigo-800 text-right">
                   Next deadline
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(project, id) in projects" :key="id" class="hover:bg-gray-200">
-                <td class="px-10 py-4 text-lg text-gray-700 border-b cursor-pointer"
-                  @click="redirectToGroup(project.id)">
+              <tr v-for="(project, id) in projects":key="id" class="hover:bg-gray-200 cursor-pointer"
+                @click="redirectToGroup(project.id)">
+
+                <td class="px-7 py-4 text-gray-500 border-b text-left">
+                  {{ project.subject }}
+                </td>
+                <td class="px-7 py-4 text-lg text-gray-700 border-b bg-gray-100">
                   {{ project.title }}
                 </td>
-                <td class="px-20 py-4 text-gray-500 border-b text-right">
+                <td v-if="user.isTeacher" class="px-7 py-4 text-lg text-gray-700 border-b">
+                  {{ project.short_code }}
+                </td>
+                <td class="px-4 py-4 text-gray-500 border-b text-right">
                   {{ project.end_date }}
                 </td>
               </tr>
