@@ -138,6 +138,20 @@ async function leaveGroup(groupId) {
                         +
                     </div>
                 </div>
+                <div v-if="group?.members?.some(member => member.user_id === userId)" class="text-right">
+                    <router-link to="/supabase">
+                        <button
+                            class="mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-violet-500 hover:border-transparent disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm transition-transform duration-300 transform hover:scale-105">
+                            <span class="pr-[10px]">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                    width="24px" fill="#e8eaed">
+                                    <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z" />
+                                </svg>
+                            </span>
+                            Go to project
+                        </button>
+                    </router-link>
+                </div>
             </div>
         </div>
 
