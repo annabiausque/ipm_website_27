@@ -108,7 +108,7 @@ async function leaveGroup(groupId) {
     </div>
 
     <div class="items-center justify-items-center justify-center" v-if="groups.length > 0">
-        <router-link to="/match">
+        <router-link :to="`/match/${projectId}`">
             <button
                 class="justify-self-center mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm">
                 <span class="pr-[10px]">
