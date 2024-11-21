@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabaseClient';
 const router = useRouter();
 const projects = ref([]);
 const userId = ref('');
+const notification = ref('');
 
 async function getUserProjects() {
   try {
@@ -90,6 +91,14 @@ onMounted(async () => {
   if (userId.value) {
     await getUserProjects();
   }
+
+  notification.value = localStorage.getItem('notification');
+  if (notification.value) {
+    setTimeout(() => {
+      notification.value = null;
+      localStorage.removeItem('notification');
+    }, 5000);
+  }
 });
 </script>
 
@@ -125,7 +134,9 @@ onMounted(async () => {
             Join a new project
           </button>
         </router-link>
-
+        <div v-if="notification" class="notification-banner bg-green-500 text-white p-4 rounded mb-4">
+          {{ notification }}
+        </div>
         <div class="my-6 overflow-hidden bg-white rounded-md shadow">
           <table class="w-full text-left border-collapse">
             <thead class="border-b">
@@ -139,15 +150,9 @@ onMounted(async () => {
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="(project, id) in projects"
-                :key="id"
-                class="hover:bg-gray-200"
-              >
-                <td
-                  class="px-10 py-4 text-lg text-gray-700 border-b cursor-pointer"
-                  @click="redirectToGroup(project.id)"
-                >
+              <tr v-for="(project, id) in projects" :key="id" class="hover:bg-gray-200">
+                <td class="px-10 py-4 text-lg text-gray-700 border-b cursor-pointer"
+                  @click="redirectToGroup(project.id)">
                   {{ project.title }}
                 </td>
                 <td class="px-20 py-4 text-gray-500 border-b text-right">
