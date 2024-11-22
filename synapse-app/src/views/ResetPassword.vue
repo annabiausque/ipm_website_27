@@ -2,6 +2,8 @@
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { supabase } from '../lib/supabaseClient';
+import { useSnackbar } from "vue3-snackbar";
+const snackbar = useSnackbar();
 
 const router = useRouter();
 const route = useRoute();
@@ -22,11 +24,16 @@ const passwordReset = async () => {
   const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
     redirectTo: window.location.href + '?action=passwordUpdate',
   });
+
   emailSent.value = true;
   loading.value = false;
   if (error) {
     console.error(error.message);
   }
+  snackbar.add({
+    type: 'success',
+    text: 'If the email exists in our system, you will receive a password reset link.',
+  });
 };
 
 const updatePassword = async () => {
@@ -37,8 +44,16 @@ const updatePassword = async () => {
   loading.value = false;
   if (error) {
     console.error(error.message);
+    snackbar.add({
+      type: 'error',
+      text: 'Error updating password. Please try again.',
+    });
   } else {
     router.push('/');
+    snackbar.add({
+      type: 'success',
+      text: 'Password updated successfully. Please login.',
+    });
   }
 };
 </script>
