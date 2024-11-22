@@ -19,13 +19,13 @@ import * as components from 'vuetify/components'
 import LogRocket from 'logrocket';
 import { supabase } from './lib/supabaseClient'
 LogRocket.init('t47bce/synapse');
-  const user = await supabase.auth.getUser()
-
-if (user) {
+  const user =  supabase.auth.getUser().then((user) => {
   LogRocket.identify( user?.data?.user?.user_metadata?.sub, {
     name: user?.data?.user?.user_metadata?.username,
   });
-}
+  });
+
+
 const app = createApp(App)
 app.component('DefaultLayout', DashboardLayout)
 app.component("vue-tailwind-datepicker",VueTailwindDatepicker)
