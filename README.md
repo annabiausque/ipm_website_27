@@ -29,7 +29,7 @@ npm install
 If it doesnt exist, create one at the root of the project.
 Add the following lines while replacing the url and key (infos in the report) :
 
-```VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_KEY=your_supabase_key```
 
 
