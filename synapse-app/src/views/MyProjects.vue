@@ -109,15 +109,23 @@ async function fetchUserId() {
   }
 }
 
-async function redirectToGroup(projectId) {
+async function redirectfromProject(projectId) {
   try {
-    const groups = await getGroups();
+  
+    console.log(user.value.isTeacher);
+    if(!user.value.isTeacher)
+    {
+      const groups = await getGroups();
 
-    const userGroup = groups.find(group => group.project_id === projectId);
+      const userGroup = groups.find(group => group.project_id === projectId);
 
-    if (userGroup) {
-      router.push({ name: 'SingleGroup', params: { id: userGroup.group_id } });
-    } else {
+      if (userGroup) {
+        router.push({ name: 'SingleGroup', params: { id: userGroup.group_id } });
+      } else {
+        router.push({ name: 'Groups', params: { projectId } });
+      }
+    }
+    else{
       router.push({ name: 'Groups', params: { projectId } });
     }
   } catch (err) {
@@ -205,8 +213,8 @@ onMounted(async () => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(project, id) in projects":key="id" class="hover:bg-gray-200 cursor-pointer"
-                @click="redirectToGroup(project.id)">
+              <tr v-for="(project, id) in projects" :key="id" class="hover:bg-gray-200 cursor-pointer"
+                @click="redirectfromProject(project.id)">
 
                 <td class="px-7 py-4 text-gray-500 border-b text-left">
                   {{ project.subject }}
