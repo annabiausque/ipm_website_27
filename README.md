@@ -20,6 +20,9 @@ Run the following command to install all required dependencies:
 
 ```bash
 npm install
+```
+
+---
 
 ## Check .env file
 
