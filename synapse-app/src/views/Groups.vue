@@ -175,10 +175,10 @@ async function leaveGroup(groupId) {
                         </div>
                     </div>
                     <div v-for="member_free_slot in group.free_spots - 1" draggable="false"  @click="addMember(group.id)"
-                        class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2 border-gray-300 border-dotted flex items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-100">
+                        class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2 border-gray-900 border-dotted flex items-center justify-center text-gray-400 cursor-pointer hover:bg-gray-500 bg-gray-300">
                     </div>
                     <div v-id="group.free_spots > 0" draggable="false" v-if = "!isTeacher" @click="addMember(group.id)"
-                        class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2 border-gray-300 border-dotted flex items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-100">
+                        class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2 border-gray-900 border-dotted flex items-center justify-center text-gray-400 cursor-pointer hover:bg-gray-500 bg-gray-300">
                         +
                     </div>
                 </div>
