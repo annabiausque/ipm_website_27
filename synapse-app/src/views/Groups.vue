@@ -67,7 +67,7 @@ onMounted(async () => {
   await fetchGroups();
   await fetchUserData();
   isTeacher.value = user.value.is_teacher; 
-  console.log(isTeacher.value);
+  console.log(groups.value);
 });
 
 
@@ -125,7 +125,8 @@ async function leaveGroup(groupId) {
 <template>
 
     <div>
-        <span class="ml-4 text-4xl font-normal text-gray-700">Choose your group</span>
+        <span class="ml-4 text-4xl font-normal text-gray-700" v-if = "!isTeacher" >Choose your group</span>
+        <span class="ml-4 text-4xl font-normal text-gray-700" v-if = "isTeacher" >Check the groups</span>
     </div>
     <div class="ml-4 mt-2 text-1xl text-gray-700">
         For project:
@@ -151,6 +152,8 @@ async function leaveGroup(groupId) {
         </router-link>
         <div v-for="group in groups" class=" hover:bg-gray-50 mt-10 bg-white shadow-md overflow-hidden rounded-3xl">
             <div class="p-8">
+                
+               
                 <div class="uppercase tracking-wide text-l text-indigo-500 font-semibold">Group: {{ group.name }}</div>
                 <div class="flex mt-4 space-x-5 justify-center">
                     <div v-for="member in group.members" :key="member.id">
@@ -193,6 +196,7 @@ async function leaveGroup(groupId) {
                         </button>
                     </router-link>
                 </div>
+           
             </div>
         </div>
 
