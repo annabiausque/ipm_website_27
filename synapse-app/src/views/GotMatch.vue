@@ -75,9 +75,7 @@ export default {
       console.log("Swiped");
     };
 
-    const goToGroup = () => {
-      router.push({ name: "TargetRoute", params: { id: card.id } });
-    };
+ 
 
     const getGroupData = async () => {
       const { data, error } = await supabase
@@ -96,8 +94,8 @@ export default {
       onClick,
       scrollToAnchor,
       onSwipe,
-      goToGroup,
-        getGroupData,
+  
+      getGroupData,
     };
   },
 };

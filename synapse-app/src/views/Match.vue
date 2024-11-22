@@ -57,58 +57,56 @@
     </div>
   </div>
 </template>
-
 <script lang="js">
 import { Swipeable } from "vue-swipy";
 import { supabase } from "../lib/supabaseClient";
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { useRouter } from "vue-router";
-
+import { useRoute, useRouter } from "vue-router";
 
 export default {
   name: "Match",
   components: { Swipeable },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const stack = ref([]);
     const noGroupsLeft = ref(false);
-    const router = useRouter();
     const projectId = route.params.projectId;
+    const currentIndex = ref(0);
+    const matchId = ref("");
 
-    const onSwipe = (direction) => {
-      const currentCard = stack.value[stack.value.length - 1]; 
-      if (!currentCard) return; 
+    const onSwipe = async (direction) => {
+      const currentCard = stack.value[currentIndex.value];
 
-      const cardElement = document.querySelector(".card");
-      if (cardElement) {
-        cardElement.classList.add(direction === "swipe-left" ? "swipe-left" : "swipe-right");
+      if (!currentCard) {
+        noGroupsLeft.value = true;
+        return;
       }
+
       if (direction === "swipe-right") {
-  createHeartEffect(); 
-  //addUserToGroup(currentCard.id); 
+        matchId.value = currentCard.id;
 
-  router.push({
-    name: 'GotMatch',
-    params: { 
-      projectId: projectId, 
-      groupId: currentCard.id 
-    }
-  });
-}
+  
+        createHeartEffect();
 
+        console.log(currentCard.id)
 
+     
+        router.push({
+          name: "GotMatch",
+          params: {
+            projectId: projectId,
+            groupId: currentCard.id,
+          },
+        });
+      }
+
+   
+      currentIndex.value++;
       setTimeout(() => {
-        stack.value.pop(); 
+        stack.value.shift();
         noGroupsLeft.value = stack.value.length === 0;
-        if (cardElement) {
-          cardElement.classList.remove("swipe-left", "swipe-right");
-        }
-      }, 500);
-    };
-
-    const onClick = (direction) => {
-      onSwipe(direction);
+      }, 300);
     };
 
     const createHeartEffect = () => {
@@ -116,8 +114,8 @@ export default {
       for (let i = 0; i < heartCount; i++) {
         const heart = document.createElement("div");
         heart.classList.add("heart");
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+        heart.style.left = `${Math.random() * 100}vw`;
+        heart.style.animationDuration = `${Math.random() * 2 + 3}s`;
         heart.innerText = "💗";
         document.body.appendChild(heart);
         setTimeout(() => {
@@ -125,25 +123,25 @@ export default {
         }, 5000);
       }
 
-    
       document.body.style.backgroundColor = "pink";
       setTimeout(() => {
-        document.body.style.backgroundColor = ""; 
+        document.body.style.backgroundColor = "";
       }, 500);
     };
 
     const addUserToGroup = async (groupId) => {
       try {
-        const { data, error } = await supabase.from("users_groups").insert([{ group_id: groupId, user_id: route.params.userId }]);
+        const { error } = await supabase
+          .from("users_groups")
+          .insert([{ group_id: groupId, user_id: route.params.userId }]);
 
         if (error) {
-          console.error("Error while adding the user to the group:", error.message);
-          return;
+          console.error("Error while adding user to group:", error.message);
+        } else {
+          console.log("User successfully added to the group.");
         }
-
-        console.log("User successfully added to the group:", data);
-      } catch (error) {
-        console.error("Unexpected error while adding the user to the group:", error.message);
+      } catch (err) {
+        console.error("Unexpected error while adding user to group:", err.message);
       }
     };
 
@@ -152,17 +150,17 @@ export default {
         const { data, error } = await supabase
           .from("groups")
           .select("id, name, avatar, skills_list")
-          .eq("project_id", route.params.projectId);
+          .eq("project_id", projectId);
 
         if (error) {
-          console.error("Erreur lors de la récupération des informations du groupe:", error.message);
+          console.error("Error fetching group info:", error.message);
           return;
         }
 
         stack.value = data || [];
         noGroupsLeft.value = stack.value.length === 0;
-      } catch (error) {
-        console.error("Erreur inattendue lors de la récupération des informations du groupe:", error.message);
+      } catch (err) {
+        console.error("Unexpected error fetching group info:", err.message);
       }
     };
 
@@ -174,12 +172,13 @@ export default {
       stack,
       noGroupsLeft,
       onSwipe,
-      onClick,
       createHeartEffect,
+      matchId,
     };
   },
 };
 </script>
+
 
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css";
