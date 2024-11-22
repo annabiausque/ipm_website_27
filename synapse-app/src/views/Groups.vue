@@ -66,9 +66,8 @@ const fetchUserData = async () => {
 onMounted(async () => {
   await fetchGroups();
   await fetchUserData();
-  isTeacher.value = user.value.is_teacher;
+  isTeacher.value = user.value.is_teacher; 
   console.log(isTeacher.value);
-  
 });
 
 
@@ -139,7 +138,7 @@ async function leaveGroup(groupId) {
 
         <router-link :to="`/match/${projectId}`">
             <button
-                class="justify-self-center mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm" v-if = "!isTeacher.valueOf">
+                class="justify-self-center mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm" v-if = "!isTeacher">
                 <span class="pr-[10px]">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                         fill="#e8eaed">
@@ -172,17 +171,17 @@ async function leaveGroup(groupId) {
                             </span>
                         </div>
                     </div>
-                    <div v-for="member_free_slot in group.free_spots - 1" draggable="false" @click="addMember(group.id)"
+                    <div v-for="member_free_slot in group.free_spots - 1" draggable="false"  @click="addMember(group.id)"
                         class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2 border-gray-300 border-dotted flex items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-100">
                     </div>
-                    <div v-id="group.free_spots > 0" draggable="false" @click="addMember(group.id)"
+                    <div v-id="group.free_spots > 0" draggable="false" v-if = "!isTeacher" @click="addMember(group.id)"
                         class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2 border-gray-300 border-dotted flex items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-100">
                         +
                     </div>
                 </div>
                 <div v-if="group?.members?.some(member => member.user_id === userId)" class="text-right">
                     <router-link :to="`/singlegroup/${group.id}`">
-                        <button
+                        <button 
                             class="mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-violet-500 hover:border-transparent disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm transition-transform duration-300 transform hover:scale-105">
                             <span class="pr-[10px]">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
