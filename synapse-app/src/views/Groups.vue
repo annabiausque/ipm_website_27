@@ -1,13 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { supabase } from '../lib/supabaseClient';
 import { useSnackbar } from "vue3-snackbar";
 const snackbar = useSnackbar();
 const route = useRoute();
-const router = useRouter()
+const router = useRouter();
 const projectId = route.params.projectId;
 const groupToLeave = ref('');
 const open = ref(false);
@@ -60,17 +58,17 @@ const fetchUserData = async () => {
         .select('*')
         .eq('id', userData?.user?.id);
     user.value = data[0];
-   
+
     console.log(user.value);
 };
 
 
 
 onMounted(async () => {
-  await fetchGroups();
-  await fetchUserData();
-  isTeacher.value = user.value.is_teacher; 
-  console.log(groups.value);
+    await fetchGroups();
+    await fetchUserData();
+    isTeacher.value = user.value.is_teacher;
+    console.log(groups.value);
 });
 
 
@@ -78,6 +76,13 @@ onMounted(async () => {
 async function addMember(groupId) {
     console.log('Adding member to group:', groupId);
     // Insert user to group
+    if (isTeacher.value) {
+        snackbar.add({
+            type: 'info',
+            text: 'You are a teacher and cannot join a group',
+        })
+        return;
+    }
 
 
     const { error } = await supabase
@@ -125,20 +130,29 @@ async function leaveGroup(groupId) {
     }
 }
 
+
+
 const profile = (id) => {
-  console.log('Profile -> id: ', id)
-  if (id) {
-    router.push(`/profile/${id}`)
-  } else {
-    console.error('User ID is not available')
-  }
+    console.log('Profile -> id: ', id)
+    if (id) {
+        router.push(`/profile/${id}`)
+    } else {
+        console.error('User ID is not available')
+    }
+}
+async function goToGroup(groupId) {
+    console.log('Going to group:', groupId);
+    // Insert user to group
+    // show confirmation modal
+    router.push({ name: 'SingleGroup', params: { id: groupId } });
+
 }
 </script>
 <template>
 
     <div>
-        <span class="ml-4 text-4xl font-normal text-gray-700" v-if = "!isTeacher" >Choose your group</span>
-        <span class="ml-4 text-4xl font-normal text-gray-700" v-if = "isTeacher" >Check the groups</span>
+        <span class="ml-4 text-4xl font-normal text-gray-700" v-if="!isTeacher">Choose your group</span>
+        <span class="ml-4 text-4xl font-normal text-gray-700" v-if="isTeacher">Check the groups</span>
     </div>
     <div class="ml-4 mt-2 text-1xl text-gray-700">
         For project:
@@ -147,11 +161,12 @@ const profile = (id) => {
         </span>
     </div>
 
-    <div class="items-center justify-items-center justify-center" v-if="groups.length > 0 ">
+    <div class="items-center justify-items-center justify-center" v-if="groups.length > 0">
 
         <router-link :to="`/match/${projectId}`">
             <button
-                class="justify-self-center mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm" v-if = "!isTeacher">
+                class="justify-self-center mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm"
+                v-if="!isTeacher">
                 <span class="pr-[10px]">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                         fill="#e8eaed">
@@ -162,16 +177,18 @@ const profile = (id) => {
                 Find me a group
             </button>
         </router-link>
-        <div v-for="group in groups" class=" hover:bg-gray-50 mt-10 bg-white shadow-md overflow-hidden rounded-3xl">
+        <div v-for="group in groups" class=" hover:bg-gray-50 mt-10 bg-white shadow-md overflow-hidden rounded-3xl"
+            @click="isTeacher && goToGroup(group.id)">
             <div class="p-8">
-                
-               
+
+
                 <div class="uppercase tracking-wide text-l text-indigo-500 font-semibold">Group: {{ group.name }}</div>
                 <div class="flex mt-4 space-x-5 justify-center">
                     <div v-for="member in group.members" :key="member.id">
                         <div class="flex flex-col items-center space-y-2 relative group">
                             <div class="relative">
-                                <img @click="() => profile(member.user_id)" :src="`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${member.user_id}&radius=50&randomizeIds=true`"
+                                <img @click="() => profile(member.user_id)"
+                                    :src="`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${member.user_id}&radius=50&randomizeIds=true`"
                                     alt="Member Avatar"
                                     class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2">
                                 <button v-if="member.user_id == userId" @click="open = true; groupToLeave = group.id"
@@ -186,17 +203,19 @@ const profile = (id) => {
                             </span>
                         </div>
                     </div>
-                    <div v-for="member_free_slot in group.free_spots - 1" draggable="false"  @click="addMember(group.id)"
-                        class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2 border-gray-900 border-dotted flex items-center justify-center text-gray-400 cursor-pointer hover:bg-gray-500 bg-gray-300">
+                    <div v-for="member_free_slot in group.free_spots - 1" draggable="false" @click="addMember(group.id)"
+                        class=" select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2 border-gray-900
+                        border-dotted flex items-center justify-center text-gray-400 cursor-pointer hover:bg-gray-500
+                        bg-gray-300">
                     </div>
-                    <div v-id="group.free_spots > 0" draggable="false" v-if = "!isTeacher" @click="addMember(group.id)"
+                    <div v-id="group.free_spots > 0" draggable="false" v-if="!isTeacher" @click="addMember(group.id)"
                         class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2 border-gray-900 border-dotted flex items-center justify-center text-gray-400 cursor-pointer hover:bg-gray-500 bg-gray-300">
                         +
                     </div>
                 </div>
                 <div v-if="group?.members?.some(member => member.user_id === userId)" class="text-right">
                     <router-link :to="`/singlegroup/${group.id}`">
-                        <button 
+                        <button
                             class="mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-violet-500 hover:border-transparent disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm transition-transform duration-300 transform hover:scale-105">
                             <span class="pr-[10px]">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
@@ -208,7 +227,7 @@ const profile = (id) => {
                         </button>
                     </router-link>
                 </div>
-           
+
             </div>
         </div>
 
