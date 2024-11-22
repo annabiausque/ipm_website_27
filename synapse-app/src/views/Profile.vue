@@ -149,11 +149,11 @@ onMounted(async () => {
                         </div>
                         
                         <hr class="border-b-2 border-gray-300 m-4">
-                        <!--
+                        
                         <div class="flex flex-col items-center">
-                            <span class="text-center font-bold">{{ user.email }}</span>
+                            <span class="text-center font-bold">userEmail@email.com</span>
                         </div>
-                        -->
+                        
                     </div>
 
                     
