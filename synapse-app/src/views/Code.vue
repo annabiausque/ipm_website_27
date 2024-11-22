@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { supabase } from '../lib/supabaseClient';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useSnackbar } from "vue3-snackbar";
 const snackbar = useSnackbar();
 const router = useRouter();
+const route = useRoute();
 interface FAQ {
   id: number
   header: string
@@ -21,6 +22,13 @@ const activeFaq = ref<number | null>(null)
 const codeInput = ref<string>('')
 const codeError = ref<string | null>(null)
 
+// Get the short_code from the URL parameter
+onMounted(() => {
+  const shortCode = route.query.short_code as string | undefined;
+  if (shortCode) {
+    codeInput.value = shortCode;
+  }
+});
 const handleToggle = () => {
   activeFaq.value = activeFaq.value === faq.id ? null : faq.id
 }
