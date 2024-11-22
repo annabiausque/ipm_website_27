@@ -74,6 +74,7 @@ export default {
     const projectId = route.params.projectId;
     const currentIndex = ref(0);
     const matchId = ref("");
+    const userId = ref("");
 
     const onSwipe = async (direction) => {
       const currentCard = stack.value[currentIndex.value];
@@ -85,7 +86,7 @@ export default {
 
       if (direction === "swipe-right") {
         matchId.value = currentCard.id;
-
+        addMember(matchId.value);
   
         createHeartEffect();
 
@@ -109,6 +110,11 @@ export default {
       }, 300);
     };
 
+    const fetchUserID = async () => {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    userId.value = userData?.user?.id;
+};
+
     const createHeartEffect = () => {
       const heartCount = 20;
       for (let i = 0; i < heartCount; i++) {
@@ -129,21 +135,6 @@ export default {
       }, 500);
     };
 
-    const addUserToGroup = async (groupId) => {
-      try {
-        const { error } = await supabase
-          .from("users_groups")
-          .insert([{ group_id: groupId, user_id: route.params.userId }]);
-
-        if (error) {
-          console.error("Error while adding user to group:", error.message);
-        } else {
-          console.log("User successfully added to the group.");
-        }
-      } catch (err) {
-        console.error("Unexpected error while adding user to group:", err.message);
-      }
-    };
 
     const fetchGroupInfos = async () => {
       try {
@@ -166,7 +157,38 @@ export default {
 
     onMounted(() => {
       fetchGroupInfos();
+      fetchUserID();
     });
+
+    async function addMember(groupId) {
+    console.log('Adding member to group:', groupId);
+    // Insert user to group
+
+
+    const { error } = await supabase
+        .from('users_groups')
+        .insert({
+            group_id: groupId,
+            project_id: projectId,
+            user_id: userId.value,
+        });
+    if (error) {
+        console.error('Error inserting user to group:', error);
+        snackbar.add({
+            type: 'info',
+            text: 'You are already member of a group',
+        })
+
+    } else {
+        console.log('User successfully added to group');
+        // snackbar.add({
+        //     type: 'success',
+        //     text: 'You successfully joined the group',
+        // });
+        // Refresh the groups state
+        await fetchGroups();
+    }
+}
 
     return {
       stack,
