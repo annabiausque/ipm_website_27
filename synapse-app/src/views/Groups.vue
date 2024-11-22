@@ -208,7 +208,7 @@ async function goToGroup(groupId) {
                         :class="{ 'hover:bg-gray-500': !isTeacher }">
                         {{ isTeacher ? "" : "+" }}
                     </div>
-                    <div v-id="group.free_spots > 0" draggable="false" v-if="!isTeacher" @click="addMember(group.id)"
+                    <div v-id="group.free_spots > 0" draggable="false"  @click="addMember(group.id)"
                         class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2 border-gray-900 border-dotted flex items-center justify-center text-gray-400 cursor-pointer  bg-gray-300"
                         :class="{ 'hover:bg-gray-500': !isTeacher }">
                         {{ isTeacher ? "" : "+" }}
