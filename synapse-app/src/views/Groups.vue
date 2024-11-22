@@ -1,10 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+
+import { useRouter } from 'vue-router';
 import { supabase } from '../lib/supabaseClient';
 import { useSnackbar } from "vue3-snackbar";
 const snackbar = useSnackbar();
 const route = useRoute();
+const router = useRouter()
 const projectId = route.params.projectId;
 const groupToLeave = ref('');
 const open = ref(false);
@@ -121,6 +124,15 @@ async function leaveGroup(groupId) {
         await fetchGroups();
     }
 }
+
+const profile = (id) => {
+  console.log('Profile -> id: ', id)
+  if (id) {
+    router.push(`/profile/${id}`)
+  } else {
+    console.error('User ID is not available')
+  }
+}
 </script>
 <template>
 
@@ -159,7 +171,7 @@ async function leaveGroup(groupId) {
                     <div v-for="member in group.members" :key="member.id">
                         <div class="flex flex-col items-center space-y-2 relative group">
                             <div class="relative">
-                                <img :src="`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${member.user_id}&radius=50&randomizeIds=true`"
+                                <img @click="() => profile(member.user_id)" :src="`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${member.user_id}&radius=50&randomizeIds=true`"
                                     alt="Member Avatar"
                                     class="select-none w-12 h-12 min-h-12 min-w-12 rounded-full border-2">
                                 <button v-if="member.user_id == userId" @click="open = true; groupToLeave = group.id"
