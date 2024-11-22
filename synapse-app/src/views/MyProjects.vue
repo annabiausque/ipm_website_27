@@ -278,7 +278,8 @@ onMounted(async () => {
         <div v-if="notification" class="notification-banner bg-green-500 text-white p-4 rounded mb-4">
           {{ notification }}
         </div>
-        <div class="my-6 overflow-hidden bg-white rounded-md shadow">
+        <div :style="user.isTeacher ? { minWidth: '475px' } : {}"
+          class="my-6 overflow-hidden bg-white rounded-md shadow">
           <table class="w-full text-left border-collapse">
             <thead class="border-b">
               <tr>
@@ -288,25 +289,27 @@ onMounted(async () => {
                 <th class="px-7 py-3 text-sm font-medium text-gray-100 uppercase bg-indigo-800">
                   Name
                 </th>
-                <th v-if="user.isTeacher" class="px-7 py-3 text-sm font-medium text-gray-100 uppercase bg-indigo-800">
+                <th v-if="user.isTeacher"
+                  class="px-7 py-3 text-sm font-medium text-gray-100 uppercase bg-indigo-800 border-l">
                   Code
                 </th>
-                <th class="px-4 py-3 text-sm font-medium text-gray-100 uppercase bg-indigo-800 text-right">
+                <th :class="!user.isTeacher ? 'border-l' : ''"
+                  class="px-4 py-3 text-sm font-medium text-gray-100 uppercase bg-indigo-800 text-right">
                   Next deadline
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(project, id) in projects" :key="id" class="hover:bg-gray-200 cursor-pointer"
-                @click="redirectfromProject(project.id)">
+              <tr v-for="(project, id) in projects" :key="id" class="hover:bg-gray-300 border-b border-gray-400">
 
-                <td class="px-7 py-4 text-gray-500 border-b text-left">
+                <td @click="redirectfromProject(project.id)" class="px-7 py-4 text-gray-500 text-left cursor-pointer">
                   {{ project.subject }}
                 </td>
-                <td class="px-7 py-4 text-lg text-gray-700 border-b bg-gray-100">
+                <td @click="redirectfromProject(project.id)" class="px-7 py-4 text-lg text-gray-700 cursor-pointer">
                   {{ project.title }}
                 </td>
-                <td v-if="user.isTeacher" class="px-7 py-4 text-lg text-gray-700 border-b">
+                <td style="width: 120px" v-if="user.isTeacher"
+                  class="px-7 py-4 text-lg text-gray-700 border-l border-gray-600">
                   <div class="flex items-center">
                     <!-- Short Code -->
                     <span class="text-gray-700 truncate" style="width: 80px;"
@@ -321,8 +324,8 @@ onMounted(async () => {
 
                   </div>
                 </td>
-
-                <td class="px-4 py-4 text-gray-500 border-b text-right">
+                <td style="width: 120px;" :class="!user.isTeacher ? 'border-l border-gray-600' : ''"
+                  class="px-4 py-4 text-gray-500 text-right">
                   {{ project.end_date }}
                 </td>
               </tr>
