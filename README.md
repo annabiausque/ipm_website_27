@@ -16,13 +16,12 @@ Before starting, make sure you have the following installed on your system:
 ## Setup Instructions
 
 ### 1. Install dependencies
-
 Run the following command to install all required dependencies:
 
 ```bash
 npm install
 
-### 2. Check .env file
+## Check .env file
 
 If it doesnt exist, create one at the root of the project.
 Add the following lines while replacing the url and key (infos in the report) :
