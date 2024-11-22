@@ -74,6 +74,7 @@ export default {
     const stack = ref([]);
     const noGroupsLeft = ref(false);
     const router = useRouter();
+    const projectId = route.params.projectId;
 
     const onSwipe = (direction) => {
       const currentCard = stack.value[stack.value.length - 1]; 
@@ -85,7 +86,7 @@ export default {
       }
       if (direction === "swipe-right") {
   createHeartEffect(); 
-  addUserToGroup(currentCard.id); 
+  //addUserToGroup(currentCard.id); 
 
   router.push({
     name: 'GotMatch',

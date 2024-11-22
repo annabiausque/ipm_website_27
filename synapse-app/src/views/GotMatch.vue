@@ -1,84 +1,54 @@
 <template>
- 
-        <div class="w-full">
-    <!-- Hero section -->
-    <section id="hero" class="w-full pb-24">
-      <BaseSection>
-        <div class="col-span-12 lg:col-span-6 mt-12 xl:mt-10 space-y-4 sm:space-y-6 px-6 text-center sm:text-left">
-          <span data-aos="fade-right" data-aos-once="true" class="text-base text-gradient font-semibold uppercase"
-            >Sign Up Today</span
-          >
-          <h1
-            data-aos="fade-right"
-            data-aos-once="true"
-            class="text-[2.5rem] sm:text-5xl xl:text-6xl font-bold leading-tight capitalize sm:pr-8 xl:pr-10"
-          >
-            The World's <span class="text-header-gradient">Fastest Growing</span> Crypto Web App
-          </h1>
-          <p data-aos="fade-down" data-aos-once="true" data-aos-delay="300" class="paragraph hidden sm:block">
-            Buy and sell 200+ cryptocurrencies with 20+ flat currencies using bank transfers or your credit/debit card.
-          </p>
-          <div
-            data-aos="fade-up"
-            data-aos-once="true"
-            data-aos-delay="700"
-            class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-2"
-          >
-            <BaseButton
-              class="max-w-full px-8 py-4 bg-gradient-to-r from-[#468ef9] to-[#0c66ee] border border-[#0c66ee] text-white"
-            >
-              Get Started
-            </BaseButton>
-            <BaseButton
-              class="max-w-full px-6 py-4 bg-inherit text-gradient border border-[#0c66ee] flex items-center justify-center"
-            >
-              <span>Download App</span>
-              <ChevronDownIcon :size="20" class="mt-1 text-[#0c66ee]" />
-            </BaseButton>
-          </div>
-        </div>
-        <div class="hidden sm:block col-span-12 lg:col-span-6">
-          <div class="w-full">
-            <img
-              data-aos="fade-up"
-              data-aos-once="true"
-              :src="require('~/assets/img/hero-image.webp')"
-              class="-mt-4"
-              alt=""
-            />
-          </div>
-        </div>
-        <img
-          data-aos="fade-up"
-          data-aos-delay="300"
-          :src="require('~/assets/img/pattern/ellipse-1.png')"
-          class="hidden sm:block absolute bottom-12 xl:bottom-16 left-4 xl:left-0 w-6"
-        />
-        <img
-          data-aos="fade-up"
-          data-aos-delay="300"
-          :src="require('~/assets/img/pattern/ellipse-2.png')"
-          class="hidden sm:block absolute top-4 sm:top-10 right-64 sm:right-96 xl:right-[32rem] w-6"
-        />
-        <img
-          data-aos="fade-up"
-          data-aos-delay="300"
-          :src="require('~/assets/img/pattern/ellipse-3.png')"
-          class="hidden sm:block absolute bottom-56 right-24 w-6"
-        />
-        <img
-          data-aos="fade-up"
-          data-aos-delay="300"
-          :src="require('~/assets/img/pattern/star.png')"
-          class="hidden sm:block absolute top-20 sm:top-28 right-16 lg:right-0 lg:left-[30rem] w-8"
-        />
-      </BaseSection>
-    </section>
+<div>
+    <div class="h-screen w-full bg-[linear-gradient(0deg,_rgba(172,46,209,0.5)_50%,_rgba(217,39,39,0.5)_120%)] rounded-xl py-10 overflow-auto">
+    <h1 class="text-4xl text-white text-center font-bold py-10">You got a match!</h1>
+
+    <div class="flex justify-center items-center mt-20">
+<div class="card relative rounded-lg border border-gray-400 w-80 h-96 overflow-y-auto">
+  <div class="max-w-sm bg-[rgba(0,0,0,0)] rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <img class="rounded-t-lg" src="../assets/logo_indigo.png" alt="Group Avatar" />
+    <div class="p-5">
+      <a href="#">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          {{ card.name }}
+        </h5>
+      </a>
+      <a href="#members" id="members">
+        <p class="mb-2 text-l font-semibold tracking-tight text-gray-900 dark:text-white">
+          Group members
+        </p>
+      </a>
+      <a href="#">
+        <p class="mb-2 text-l font-semibold tracking-tight text-gray-900 dark:text-white">
+          Skills: {{ (card.skills_list || []).join(", ") }}
+        </p>
+      </a>
+      <a href="#">
+        <p class="mb-2 text-l font-semibold tracking-tight text-gray-900 dark:text-white">
+          Preferences
+        </p>
+      </a>
     </div>
+  </div>
+</div>
+</div>
+
+</div>
+</div>
 </template>
 
 <script>
 
+export default {
+  data() {
+    return {
+      card: {
+        name: "Group Name",
+        skills_list: ["Skill 1", "Skill 2", "Skill 3"],
+      },
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>
