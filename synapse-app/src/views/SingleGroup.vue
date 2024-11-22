@@ -116,7 +116,7 @@ export default {
 
 <template>
   <div class="bg-gray-50 py-24 sm:py-32">
-    <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
+    <div class="w-full h-full px-6 lg:max-w-7xl lg:px-8">
       <h2 class="text-center text-base/7 font-semibold text-indigo-600">Project name</h2>
       <div v-if="loading" class="text-center py-12">
               <p class="text-gray-500 text-lg">Loading...</p>
