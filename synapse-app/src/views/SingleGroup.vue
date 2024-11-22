@@ -204,18 +204,14 @@ export default {
                 List of tasks
               </p>
 
-    
-            <div class="!z-5 relative  rounded-[20px] max-w-[300px] bg-clip-border shadow-3xl shadow-shadow-500 flex flex-col w-full !p-4 3xl:p-![18px] bg-white undefined">
+    <!---->
+              <div class="!z-5 relative  rounded-[20px] max-w-[300px] bg-clip-border shadow-3xl shadow-shadow-500 flex flex-col w-full !px-4 !pb-8 !pt-5 xl:p-![18px] bg-gray-500 mb-5">
                  
-          
- 
                 <div class="mt-5 flex items-center justify-between p-2">
                     <div class="flex items-center justify-center gap-2">
                       <input
                             type="checkbox"
-                            class="defaultCheckbox relative flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] appearance-none items-center 
-                            justify-center rounded-md border border-gray-300 text-white/0 outline-none transition duration-[0.2s]
-                            checked:border-none checked:text-white hover:cursor-pointer dark:border-white/10 checked:bg-brand-500 dark:checked:bg-brand-400"
+                            class="defaultCheckbox relative flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] items-center justify-center rounded-md border border-gray-800 hover:cursor-pointer outline-none transition duration-[0.5s] checked:text-black checked:border-none dark:border-white/10"
                             name="weekly" 
                         />
                         <p class="text-base font-bold text-navy-700 dark:text-white">
@@ -229,9 +225,7 @@ export default {
                     <div class="flex items-center justify-center gap-2">
                       <input
                             type="checkbox"
-                            class="defaultCheckbox relative flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] appearance-none items-center 
-                            justify-center rounded-md border border-gray-300 text-white/0 outline-none transition duration-[0.2s]
-                            checked:border-none checked:text-white hover:cursor-pointer dark:border-white/10 checked:bg-brand-500 dark:checked:bg-brand-400"
+                            class="defaultCheckbox relative flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] items-center justify-center rounded-md border border-gray-800 hover:cursor-pointer outline-none transition duration-[0.5s] checked:text-black checked:border-none dark:border-white/10"
                             name="weekly" 
                         />
                         <p class="text-base font-bold text-navy-700 dark:text-white">
@@ -245,9 +239,7 @@ export default {
                     <div class="flex items-center justify-center gap-2">
                       <input
                             type="checkbox"
-                            class="defaultCheckbox relative flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] appearance-none items-center 
-                            justify-center rounded-md border border-gray-300 text-white/0 outline-none transition duration-[0.2s]
-                            checked:border-none checked:text-white hover:cursor-pointer dark:border-white/10 checked:bg-brand-500 dark:checked:bg-brand-400"
+                            class="defaultCheckbox relative flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] items-center justify-center rounded-md border border-gray-800 hover:cursor-pointer outline-none transition duration-[0.5s] checked:text-black checked:border-none dark:border-white/10"
                             name="weekly" 
                         />
                         <p class="text-base font-bold text-navy-700 dark:text-white">
@@ -261,9 +253,7 @@ export default {
                     <div class="flex items-center justify-center gap-2">
                       <input
                             type="checkbox"
-                            class="defaultCheckbox relative flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] appearance-none items-center 
-                            justify-center rounded-md border border-gray-300 text-white/0 outline-none transition duration-[0.2s]
-                            checked:border-none checked:text-white hover:cursor-pointer dark:border-white/10 checked:bg-brand-500 dark:checked:bg-brand-400"
+                            class="defaultCheckbox relative flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] items-center justify-center rounded-md border border-gray-800 hover:cursor-pointer outline-none transition duration-[0.5s] checked:text-black checked:border-none dark:border-white/10"
                             name="weekly" 
                         />
                         <p class="text-base font-bold text-navy-700 dark:text-white">
@@ -275,29 +265,22 @@ export default {
 
                 <div class="mt-2 flex items-center justify-between p-2">
                     <div class="flex items-center justify-center gap-2">
-                        <input
+                      <input
                             type="checkbox"
-                            class="defaultCheckbox relative flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] appearance-none items-center 
-                            justify-center rounded-md border border-gray-300 text-white/0 outline-none transition duration-[0.2s]
-                            checked:border-none checked:text-white hover:cursor-pointer dark:border-white/10 checked:bg-brand-500 dark:checked:bg-brand-400"
+                            class="defaultCheckbox relative flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] items-center justify-center rounded-md border border-gray-800 hover:cursor-pointer outline-none transition duration-[0.5s] checked:text-black checked:border-none dark:border-white/10"
                             name="weekly" 
                         />
                         <p class="text-base font-bold text-navy-700 dark:text-white">
                         Dashboard Builder
                         </p>
-                    </div>
-                  
+                      </div>
+                  </div>
                 </div>
-           
-            </div>
-                 
- 
               
+              </div>
             </div>
-          </div>
-          <div
-            class="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 max-lg:rounded-t-[2rem]"
-          ></div>
+          
+            <div class="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 max-lg:rounded-t-[2rem]"></div>
          
         </div>
         <div class="relative lg:row-span-1">
