@@ -12,6 +12,9 @@ const loading = ref(true);
 const groups = ref([]);
 const userId = ref('');
 const project = ref('');
+const user = ref('');
+const isTeacher = ref(false);
+
 const fetchGroups = async () => {
     const { data: projectData } = await supabase
         .from('projects')
@@ -43,7 +46,32 @@ const fetchGroups = async () => {
     loading.value = false;
 };
 
-onMounted(fetchGroups);
+const fetchUserData = async () => {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError) {
+        console.error('Error fetching user:', userError);
+        return;
+    }
+    const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userData?.user?.id);
+    user.value = data[0];
+   
+    console.log(user.value);
+};
+
+
+
+onMounted(async () => {
+  await fetchGroups();
+  await fetchUserData();
+  isTeacher.value = user.value.is_teacher;
+  console.log(isTeacher.value);
+  
+});
+
+
 
 async function addMember(groupId) {
     console.log('Adding member to group:', groupId);
@@ -107,10 +135,11 @@ async function leaveGroup(groupId) {
         </span>
     </div>
 
-    <div class="items-center justify-items-center justify-center" v-if="groups.length > 0">
+    <div class="items-center justify-items-center justify-center" v-if="groups.length > 0 ">
+
         <router-link :to="`/match/${projectId}`">
             <button
-                class="justify-self-center mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm">
+                class="justify-self-center mt-4 bg-gray-800 border-gray-800 border rounded-full inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium text-white hover:bg-gray-700 hover:border-gray-700 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 shadow-sm" v-if = "!isTeacher.valueOf">
                 <span class="pr-[10px]">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                         fill="#e8eaed">
