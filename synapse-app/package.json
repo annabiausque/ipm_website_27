@@ -19,6 +19,8 @@
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
     "interactjs": "^1.10.27",
+    "logrocket": "^9.0.0",
+    "logrocket-vuex": "^0.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "swiper": "^11.1.14",
