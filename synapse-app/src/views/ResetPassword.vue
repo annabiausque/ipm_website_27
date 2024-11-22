@@ -11,7 +11,7 @@ const password = ref('');
 const loading = ref(false);
 const emailSent = ref(false);
 const isUpdate = ref(route.query.action === 'passwordUpdate');
-
+//console.log('isUpdate', isUpdate);
 
 onMounted(() => {
   console.log('isUpdate', isUpdate);
