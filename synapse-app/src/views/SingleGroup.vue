@@ -2,9 +2,6 @@
 import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
 import { supabase } from "../lib/supabaseClient";
-import { defineComponent } from "vue";
-
-
 
 export default {
   name: "SingleGroup",
@@ -13,8 +10,11 @@ export default {
     const groupId = route.params.id;
     const groupData = ref(null);
     const loading = ref(true);
-    const userID = ref(null);
-    
+    const usernames = ref([]); 
+    const projectId = ref(null);
+    const skillsList = ref([]);
+    const projectData = ref(null);
+    const members = ref([]); 
 
     const fetchGroupData = async (groupId) => {
       try {
@@ -40,31 +40,83 @@ export default {
       }
     };
 
-    const fetchGroupMembers = async (groupId) => {
+    const fetchGroupSkills = async (groupId, projectId) => {
       try {
         const { data, error } = await supabase
           .from("users_groups")
           .select("user_id")
-          .eq("group_id", groupId);
+          .eq("group_id", groupId)
+          .eq("project_id", projectId);
 
         if (error) {
-          console.error("Erreur Supabase:", error.message);
+          console.error("Error Supabase:", error.message);
           return [];
         }
 
-        return data.map((item) => item.user_id);
+        if (!data || data.length === 0) {
+          console.warn("No member found.");
+          return [];
+        }
+
+        members.value = await Promise.all(
+          data.map(async (member) => {
+            const { user_id } = member;
+            const { data: userProfile, error: profileError } = await supabase
+              .from("profiles")
+              .select("username")
+              .eq("id", user_id)
+              .single();
+
+            if (profileError) {
+              console.error(
+                `Erreur lors de la récupération du username pour l'utilisateur ${user_id}:`,
+                profileError.message
+              );
+              return { user_id, username: "Utilisateur inconnu" };
+            }
+
+            return { user_id, username: userProfile.username };
+          })
+        );
+
+        let allSkills = [];
+
+        for (const member of members.value) {
+          const { user_id } = member;
+
+          const { data: userSkills, error: skillsError } = await supabase
+            .from("users_projects")
+            .select("skills_list")
+            .eq("user_id", user_id)
+            .eq("project_id", projectId);
+
+          if (skillsError) {
+            console.error(
+              `Erreur lors de la récupération des compétences pour l'utilisateur ${user_id}:`,
+              skillsError.message
+            );
+            continue;
+          }
+
+          if (userSkills && userSkills.length > 0 && userSkills[0].skills_list) {
+            allSkills = allSkills.concat(userSkills[0].skills_list);
+          }
+        }
+
+        skillsList.value = [...new Set(allSkills)];
       } catch (error) {
         console.error("Erreur inattendue:", error.message);
         return [];
       }
     };
 
-    const fetchUsernameFromID = async(userID) => {
+ 
+    const fetchProjectData = async (projectId) => {
       try {
         const { data, error } = await supabase
-          .from("users")
-          .select("username")
-          .eq("id", userID);
+          .from("projects")
+          .select("*")
+          .eq("id", projectId);
 
         if (error) {
           console.error("Erreur Supabase:", error.message);
@@ -72,7 +124,7 @@ export default {
         }
 
         if (!data || data.length === 0) {
-          console.warn("Aucun utilisateur trouvé avec cet ID.");
+          console.warn("Aucun projet trouvé avec cet ID.");
           return null;
         }
 
@@ -81,47 +133,50 @@ export default {
         console.error("Erreur inattendue:", error.message);
         return null;
       }
-    }
-
-    const loadGroupUsernames = async () => {
-      try {
-        // Étape 1 : Récupérer les user_id
-        const userIds = await fetchGroupMembers(groupId);
-
-        // Étape 2 : Récupérer les usernames pour chaque user_id
-        const promises = userIds.map((id) => fetchUsernameFromID(id));
-        const results = await Promise.all(promises);
-
-        // Filtrer les résultats non valides (null ou undefined)
-        usernames.value = results.filter((username) => username !== null).map((user) => user.username);
-      } catch (error) {
-        console.error("Erreur lors du chargement des usernames :", error.message);
-      } finally {
-        loading.value = false; // Fin du chargement
-      }
     };
 
+   
     onMounted(async () => {
-      console.log("Group ID:", groupId);
-      groupData.value = await fetchGroupData(groupId);
-      loading.value = false;
-      loadGroupUsernames();
+      try {
+        groupData.value = await fetchGroupData(groupId);
 
+        if (groupData.value) {
+          projectId.value = groupData.value.project_id;
+
+          await fetchGroupSkills(groupId, projectId.value);
+
+
+          projectData.value = await fetchProjectData(projectId.value);
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des données du groupe :", error.message);
+      } finally {
+        loading.value = false;
+      }
     });
 
-    return { groupData, loading };
+    return {
+      groupData,
+      loading,
+      usernames,
+      skillsList,
+      projectData,
+      members, 
+    };
   },
 };
 </script>
 
+
 <template>
   <div class="bg-gray-50 py-24 sm:py-32">
     <div class="w-full h-full px-6 lg:max-w-7xl lg:px-8">
-      <h2 class="text-center text-base/7 font-semibold text-indigo-600">Project name</h2>
+   
       <div v-if="loading" class="text-center py-12">
               <p class="text-gray-500 text-lg">Loading...</p>
             </div>
             <div v-else-if="groupData" class="p-8">
+              <h2 class="text-center text-base/7 font-semibold text-indigo-600">{{projectData.title}}</h2>
               <p class="mx-auto mt-2 max-w-lg text-balance text-center text-4xl font-semibold tracking-tight text-gray-950 sm:text-5xl">
      {{ groupData.name }}
       </p>
@@ -138,14 +193,22 @@ export default {
               <p class="text-gray-500 text-lg">Loading...</p>
             </div>
             
-            <div v-else-if="groupData" >
-              <h3 class="text-lg font-medium text-gray-800">Group members </h3>
-             <li v-for="(username, index) in usernames" :key="index" class="py-2">
-        <span class="text-gray-800">{{ username }}</span>
-      </li>
-              <h3 class="mt-4 text-lg font-medium text-gray-800">Skills </h3>
-              <p class="mt-2 text-gray-600">{{ (groupData.skills_list || []).join(", ") }}</p>
-            </div>
+            <div v-else-if="groupData">
+            <h3 class="text-lg font-medium text-gray-800">Group members</h3>
+            <ul>
+              <li v-for="(member, index) in members" :key="index" class="py-2">
+                <span class="text-gray-800">{{ member.username }}</span>
+              </li>
+            </ul>
+
+            <h3 class="mt-4 text-lg font-medium text-gray-800">Skills</h3>
+            <ul>
+              <li v-for="(skill, index) in skillsList" :key="index" class="py-2">
+                <span class="text-gray-600">{{ skill }}</span>
+              </li>
+            </ul>
+          </div>
+
             <div v-else class="text-center py-12">
               <p class="text-gray-500 text-lg">Aucun groupe trouvé.</p>
             </div>
@@ -320,6 +383,3 @@ export default {
 </style>
 
 
-<style scoped>
-/* Ajoutez des styles spécifiques ici si nécessaire */
-</style>
