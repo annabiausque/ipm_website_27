@@ -120,15 +120,15 @@ async function updateStudentSkills(event: Event) {
 </script>
 
 <template>
-  <section class="bg-gray-1 dark:bg-dark py-30 lg:py-20">
+  <section class="bg-gray-1 py-30 lg:py-20">
     <div class="container mx-auto mt-[10px]">
       <!-- Display the project title -->
       <div class="text-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-white">
+        <h1 class="text-3xl font-bold text-gray-800 ">
           {{ projectTitle || 'Loading...' }}
         </h1>
-        <p v-if="maxNumber !== null" class="text-gray-600 dark:text-gray-400">
-          Max number: {{ maxNumber }}
+        <p v-if="maxNumber !== null" class="text-gray-600 ">
+          Max number of students in a group: {{ maxNumber }}
         </p>
       </div>
 
@@ -138,7 +138,7 @@ async function updateStudentSkills(event: Event) {
             <form @submit="updateStudentSkills">
               <!-- Group Size Selection -->
               <div class="mb-12 flex items-center justify-between">
-                <label for="group-select" class="mr-4 text-base font-medium text-dark dark:text-white">
+                <label for="group-select" class="mr-4 text-base font-medium text-dark ">
                   I am looking for a group with
                 </label>
                 <div class="relative z-20 flex-1 ml-[-30px] group">
@@ -151,13 +151,13 @@ async function updateStudentSkills(event: Event) {
                       {{ number }}
                     </option>
                   </select>
-                  <span class="ml-2 text-base font-medium text-dark dark:text-white">free spots</span>
+                  <span class="ml-2 text-base font-medium text-dark ">free spots</span>
                 </div>
               </div>
 
               <!-- Working Mode Selection -->
               <div class="mb-12 flex items-center justify-between">
-                <label for="working-mode" class="mr-4 text-base font-medium text-dark dark:text-white">
+                <label for="working-mode" class="mr-4 text-base font-medium text-dark ">
                   I prefer working
                 </label>
                 <div class="relative z-20 flex-1 ml-[-30px]">
@@ -175,7 +175,7 @@ async function updateStudentSkills(event: Event) {
 
               <!-- Skill Buttons Section -->
               <div class="mb-8">
-                <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Select your skills:</h2>
+                <h2 class="text-xl font-semibold text-gray-800  mb-4">Select your skills:</h2>
                 <div class="flex flex-wrap gap-2 justify-center">
                   <button
                     v-for="skill in skillList"
