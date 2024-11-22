@@ -29,7 +29,7 @@ const fetchProjects = async () => {
         // Fetch project details
         let { data: projectsData, error: projectsError } = await supabase
             .from('projects')
-            .select('id, title')
+            .select('id, title, subject')
             .in('id', projectIds)
     
         if (projectsError) throw projectsError
@@ -47,7 +47,7 @@ const fetchProjects = async () => {
             // Fetch projects created by the teacher
             let { data: teacherProjects, error: teacherProjectsError } = await supabase
                 .from('projects')
-                .select('id, title')
+                .select('id, title, subject')
                 .eq('id_owner', user.value.id);
             
             if (teacherProjectsError) throw teacherProjectsError;
@@ -186,24 +186,21 @@ onMounted(async () => {
                         </div>
                             
                         <h2 class="text-xl font-bold mt-8 mb-3">Projects Enrolled:</h2>
-                        <div class="mb-6">
-                            <div class="flex justify-between flex-wrap gap-x-10 w-full pr-12">
-                                <div v-for="project in projects" :key="project.id">
-                                    <span class="text-gray-700 font-bold">{{ project.title }}</span>
-                                </div>                             
-                            </div>
-                        </div>
+
                     </div>
                     <div v-else>
                         <h2 class="text-xl font-bold mt-8 mb-3">Lecturing Projects:</h2>
-                        <div class="mb-6">
-                            <div class="flex justify-between flex-wrap gap-x-10 w-full pr-12">
-                            <div v-for="project in projects" :key="project.id">
-                                <span class="text-gray-700 font-bold">{{ project.title }}</span>
-                            </div>                             
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex flex-col gap-y-4 w-full pr-12">
+                            <div v-for="project in projects" :key="project.id" class="w-full">
+                                <span class="text-gray-700 font-bold"> -> {{ project.title }} </span>
+                                <span class="text-gray-700"> ({{ project.subject }})</span>
                             </div>
                         </div>
                     </div>
+                    
                 
 
                     <h2 class="text-xl font-bold mb-4">About Me</h2>
