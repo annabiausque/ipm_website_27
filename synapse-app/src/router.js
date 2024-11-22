@@ -27,13 +27,13 @@ const routes= [
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,
-    meta: { requiresAuth: true } 
+    meta: { requiresAuth: true, } 
   },
     {
     path: '/welcome',
     name: 'WelcomeScreen',
     component: WelcomeScreen,
-    meta: { layout: 'empty' }},
+    meta: { requiresAuth: true, layout: 'empty' }},
   {
     path: '/',
     name: 'Login',
@@ -50,6 +50,8 @@ const routes= [
     path: '/groups/:projectId',
     name: 'Groups',
     component: Groups,
+        meta: { requiresAuth: true, } 
+
   },
       {
     path: '/register',
@@ -62,12 +64,16 @@ const routes= [
     path: '/forms',
     name: 'Forms',
     component: Forms,
+        meta: { requiresAuth: true, } 
+
   },
 
   {
     path: '/code',
     name: 'Code',
     component: Code,
+        meta: { requiresAuth: true, } 
+
   },
   {
     path: '/tables',
@@ -78,6 +84,8 @@ const routes= [
     path: '/my-projects',
     name: 'MyProjects',
     component: MyProjects,
+        meta: { requiresAuth: true, } 
+
   },
   {
     path: '/modal',
@@ -93,6 +101,8 @@ const routes= [
     path: '/studentform/:projectId',
     name: 'StudentForm',
     component: StudentForm,
+        meta: { requiresAuth: true, } 
+
   },
   {
     path: '/supabase',
@@ -103,16 +113,21 @@ const routes= [
     path: '/match/:projectId',
     name: 'Match',
     component: Match,
+        meta: { requiresAuth: true, } 
+
   },
   {
     path: '/gotmatch/:projectId/:groupId',
     name: 'GotMatch',
     component: GotMatch,
+        meta: { requiresAuth: true, } 
+
   },
   {
     path: '/singlegroup/:id',
     name: 'SingleGroup',
     component: SingleGroup,
+    meta: { requiresAuth: true }
   },
     {
     path: '/profile/:id',
@@ -131,13 +146,14 @@ const router = createRouter({
 // Navigation guard
 router.beforeEach(async (to, from, next) => {
   const { data: session } = await supabase.auth.getSession();
-  console.log(session, session);
+  console.log('session', session.session);
+  console.log('to', true&&session.session);
   // If the route requires authentication and there's no session, redirect to /login
-  if (to.matched.some(record => record.meta.requiresAuth) && !session) {
+  if (to.matched.some(record => record.meta.requiresAuth) && !session.session) {
     next({ name: 'Login' });
-  } else if (to.path === '/login' && session) {
+  } else if (to.path === '/' && session.session) {
     // If logged in and trying to access /login, redirect to /dashboard
-    next({ name: 'Dashboard' });
+    next({ name: 'MyProjects' });
   } else {
     next();
   }

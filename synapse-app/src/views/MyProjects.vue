@@ -198,13 +198,21 @@ onMounted(async () => {
         </div>
 
         <!-- Body -->
-        <div class="text-center text-l mb-8">Join project with code: <a class=" font-bold">{{ currentQrCode }}</a>
+        <div class="text-center text-l mb-8">Join project with code: <a class=" font-bold"
+            @click.prevent.stop="copyToClipboard(currentQrCode)">{{ currentQrCode }}</a>
         </div>
 
 
-        <qrcode-vue :value="`https://synapse-app-g27.vercel.app/code?${currentQrCode.value}`"
+        <qrcode-vue
+          @click.prevent.stop="copyToClipboard(`https://synapse-app-g27.vercel.app/code?short_code=${currentQrCode}`)"
+          :value="`https://synapse-app-g27.vercel.app/code?short_code=${currentQrCode}`"
           class="ml-5 justify-self-center" :size="200"></qrcode-vue>
-        <!-- Footer -->
+        <div class="text-center mt-4">
+          <a :href="`https://synapse-app-g27.vercel.app/code?short_code=${currentQrCode}`" class="text-center text-blue-500 hover:text-blue-700 font-semibold transition duration-300 ease-in-out transform
+          hover:scale-105">
+            https://synapse-app-g27.vercel.app/code?short_code={{ currentQrCode }}
+          </a>
+        </div> <!-- Footer -->
         <div class="flex justify-end pt-2">
           <button
             class="p-3 px-6 py-3 mr-2 text-indigo-500 bg-transparent rounded-lg hover:bg-gray-100 hover:text-indigo-400 focus:outline-none"
