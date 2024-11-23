@@ -188,6 +188,11 @@ export default {
           <div
             class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-l-[calc(2rem+1px)]"
           >
+
+            <button class="mb-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+              Send email to all members
+            </button>
+            
           <div class="px-8 pt-8 sm:px-10 sm:pt-10">
             <div v-if="loading" >
               <p class="text-gray-500 text-lg">Loading...</p>
