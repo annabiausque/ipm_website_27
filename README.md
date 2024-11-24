@@ -9,7 +9,7 @@ Follow the steps below to set up and run the project locally:
 Before starting, make sure you have the following installed on your system:
 
 - [Vue.js](https://vuejs.org/) 
-- [npm](https://www.npmjs.com/) (comes with Node.js)
+- [npm](https://www.npmjs.com/)
 
 ---
 
