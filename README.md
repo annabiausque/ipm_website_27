@@ -8,8 +8,8 @@ Follow the steps below to set up and run the project locally:
 
 Before starting, make sure you have the following installed on your system:
 
-- [Node.js](https://nodejs.org/) (v16 or later is recommended)
-- [npm](https://www.npmjs.com/) (comes with Node.js)
+- [Vue.js](https://vuejs.org/) 
+- [npm](https://www.npmjs.com/)
 
 ---
 
