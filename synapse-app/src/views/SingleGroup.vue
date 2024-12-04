@@ -2,6 +2,7 @@
 import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
 import { supabase } from "../lib/supabaseClient";
+import { useSnackbar } from "vue3-snackbar";
 
 export default {
   name: "SingleGroup",
@@ -15,6 +16,16 @@ export default {
     const skillsList = ref([]);
     const projectData = ref(null);
     const members = ref([]); 
+    const snackbar = useSnackbar();
+    const isOpen = ref(false);
+
+    const openMenuIndex = ref(null);
+
+    const toggleMenu = (index) => {
+      openMenuIndex.value = openMenuIndex.value === index ? null : index;
+    };
+
+    const isMenuOpen = (index) => openMenuIndex.value === index;
 
     const fetchGroupData = async (groupId) => {
       try {
@@ -39,6 +50,7 @@ export default {
         return null;
       }
     };
+    
 
     const fetchGroupSkills = async (groupId, projectId) => {
       try {
@@ -161,7 +173,9 @@ export default {
       usernames,
       skillsList,
       projectData,
-      members, 
+      members,
+      toggleMenu,
+      isMenuOpen,
     };
   },
 };
@@ -188,10 +202,6 @@ export default {
           <div
             class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-l-[calc(2rem+1px)]"
           >
-
-            <button class="mb-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-              Send email to all members
-            </button>
             
           <div class="px-8 pt-8 sm:px-10 sm:pt-10">
             <div v-if="loading" >
@@ -201,9 +211,52 @@ export default {
             <div v-else-if="groupData">
             <h3 class="text-lg font-medium text-gray-800">Group members</h3>
             <ul>
-              <li v-for="(member, index) in members" :key="index" class="py-2">
-                <span class="text-gray-800">{{ member.username }}</span>
-              </li>
+           
+              <li v-for="(member, index) in members" :key="index" class="py-2 relative">
+  <div class="flex items-center gap-x-2">
+   
+    <div class="relative">
+  <button
+    type="button"
+    class="inline-flex items-center gap-x-1 text-sm font-semibold text-gray-900"
+    @click="toggleMenu(index)"
+    :aria-expanded="isMenuOpen(index)"
+  >
+    <span>{{ member.username }}</span>
+    <svg
+      class="size-5"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  </button>
+
+  <transition name="dropdown">
+    <div
+      v-if="isMenuOpen(index)"
+      class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white z-50"
+    >
+      <div class="group relative flex gap-x-6 rounded-lg p-2 hover:bg-gray-50">
+        <div>
+          <a href="#" class="text-gray-900">email@email.com</a>
+        </div>
+      </div>
+    </div>
+  </transition>
+</div>
+
+
+    
+  </div>
+</li>
+
+
             </ul>
 
             <h3 class="mt-4 text-lg font-medium text-gray-800">Skills</h3>
@@ -384,7 +437,35 @@ export default {
 </template>
 
 <style scoped>
-/* Ajoutez des styles spécifiques ici si nécessaire */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.dropdown-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.dropdown-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* Classe pour la gestion de la superposition */
+.z-50 {
+  z-index: 50;
+}
 </style>
 
 
