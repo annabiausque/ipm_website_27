@@ -321,12 +321,12 @@ export default {
         
             </div>
             <div class="px-8 pt-8 sm:px-10 sm:pt-10">
-              <p class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
+              <p class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center p-4">
                 List of tasks
               </p>
 
     <!---->
-              <div class="!z-5 relative  rounded-[20px] max-w-[300px] bg-clip-border shadow-3xl shadow-shadow-500 flex flex-col w-full !px-4 !pb-8 !pt-5 xl:p-![18px] bg-gray-500 mb-5">
+              <div class="!z-5 relative  rounded-[20px] max-w-[300px] bg-clip-border shadow-3xl shadow-shadow-500 flex flex-col w-full !px-4 !pb-8 !pt-5 xl:p-![18px] bg-gray-100 mb-5">
                  
                 <div class="mt-5 flex items-center justify-between p-2">
                     <div class="flex items-center justify-center gap-2">
