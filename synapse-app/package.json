@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint .",
@@ -18,7 +18,9 @@
     "@vitejs/plugin-react": "^4.3.3",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
+    "dropzone": "^6.0.0-beta.2",
     "interactjs": "^1.10.27",
+    "lodash": "^4.17.21",
     "logrocket": "^9.0.0",
     "logrocket-vuex": "^0.0.3",
     "qrcode.vue": "^3.6.0",
