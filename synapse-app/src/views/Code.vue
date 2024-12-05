@@ -29,6 +29,9 @@ onMounted(() => {
     codeInput.value = shortCode;
   }
 });
+
+
+
 const handleToggle = () => {
   activeFaq.value = activeFaq.value === faq.id ? null : faq.id
 }
@@ -59,41 +62,62 @@ const signUserToProject = async () => {
     return;
   }
   let project_id: string = "";
-  //select the project
-  const { data } = await supabase
+  
+  // Sprawdzenie projektu
+  const { data: projectData, error: projectError } = await supabase
     .from('projects')
     .select('*')
-    .eq('short_code', codeInput.value
-
-    )
-  if (data && data.length > 0) {
-    project_id = data[0].id;
-    console.log(project_id);
-  } else {
+    .eq('short_code', codeInput.value);
+  
+  if (projectError || !projectData || projectData.length === 0) {
     console.error('No project found with the provided code.');
-    snackbar.add({
-      type: 'error',
-      text: 'No project found with the provided code.',
-    });
+    snackbar.add({ type: 'error', text: 'No project found with the provided code.' });
+    return;
   }
+  
+  project_id = projectData[0].id;
+  
+  // Pobranie użytkownika
   const { data: userData, error: userError } = await supabase.auth.getUser();
-  if (userError) {
+  if (userError || !userData?.user?.id) {
     console.error('Error fetching user:', userError);
     return;
   }
-  console.log(userData?.user?.id);
-  const { error } = await supabase
+  
+  const userId = userData.user.id;
+  
+  // Sprawdzenie, czy użytkownik jest już przypisany do projektu
+  const { data: existingAssignment, error: assignmentError } = await supabase
     .from('users_projects')
-    .insert({ project_id: project_id, user_id: userData?.user?.id })
-
-  console.log("User signed to project");
-
-  //redirect user to /groups tab
-  router.push({ name: 'StudentForm', params: { projectId: project_id } });
-  snackbar.add({
-    type: 'success',
-    text: 'You have successfully joined the project.',
-  });
+    .select('*')
+    .eq('project_id', project_id)
+    .eq('user_id', userId);
+  
+  if (assignmentError) {
+    console.error('Error checking assignment:', assignmentError);
+    snackbar.add({ type: 'error', text: 'Error verifying your project assignment.' });
+    return;
+  }
+  
+  if (existingAssignment && existingAssignment.length > 0) {
+    snackbar.add({ type: 'warning', text: 'You are already assigned to this project.' });
+    router.push({ name: 'Code' });
+    return;
+  }
+  
+  // Dodanie użytkownika do projektu
+  const { error: insertError } = await supabase
+    .from('users_projects')
+    .insert({ project_id: project_id, user_id: userId });
+  
+  if (insertError) {
+    console.error('Error signing user to project:', insertError);
+    snackbar.add({ type: 'error', text: 'Failed to join the project. Please try again later.' });
+  } else {
+    console.log("User signed to project");
+    snackbar.add({ type: 'success', text: 'You have successfully joined the project.' });
+    router.push({ name: 'StudentForm', params: { projectId: project_id } });
+  }
 }
 </script>
 
